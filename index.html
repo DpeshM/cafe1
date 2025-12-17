@@ -7,8 +7,6 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -45,10 +43,8 @@
             background: white;
             border-radius: 1rem;
             padding: 3rem;
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .wizard-title {
@@ -57,62 +53,6 @@
             color: #ea580c;
             margin-bottom: 1rem;
             text-align: center;
-        }
-
-        .wizard-subtitle {
-            color: #6b7280;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .setup-step {
-            background: #f9fafb;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .setup-step h3 {
-            color: #111827;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .step-number {
-            background: #ea580c;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        .setup-option {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        .setup-option:hover {
-            border-color: #ea580c;
-            background: #ffedd5;
-        }
-
-        .setup-option input[type="radio"] {
-            width: 20px;
-            height: 20px;
         }
 
         .input-group {
@@ -140,11 +80,6 @@
             border-color: #ea580c;
         }
 
-        textarea.input-field {
-            min-height: 100px;
-            resize: vertical;
-        }
-
         .btn-primary {
             background-color: #ea580c;
             color: white;
@@ -156,6 +91,7 @@
             width: 100%;
             font-size: 1.125rem;
             transition: background-color 0.2s;
+            margin-top: 1rem;
         }
 
         .btn-primary:hover {
@@ -172,81 +108,6 @@
             cursor: pointer;
             margin-top: 0.5rem;
             width: 100%;
-        }
-
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-
-        .btn-success {
-            background-color: #16a34a;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-success:hover {
-            background-color: #15803d;
-        }
-
-        .btn-danger {
-            background-color: #dc2626;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-
-        .btn-danger:hover {
-            background-color: #b91c1c;
-        }
-
-        .btn-warning {
-            background-color: #f59e0b;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-
-        .btn-warning:hover {
-            background-color: #d97706;
-        }
-
-        .btn-small {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-        }
-
-        .info-box {
-            background: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0.25rem;
-        }
-
-        .info-box p {
-            color: #1e40af;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .info-box code {
-            background: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
-            color: #dc2626;
         }
 
         /* Loading Screen */
@@ -418,11 +279,6 @@
             border-color: #ea580c;
         }
 
-        .table-card.reserved {
-            background-color: #fef3c7;
-            border-color: #f59e0b;
-        }
-
         .table-number {
             font-size: 2.5rem;
             font-weight: 700;
@@ -437,20 +293,6 @@
             font-weight: 600;
         }
 
-        .table-capacity {
-            font-size: 0.75rem;
-            color: #374151;
-            margin-top: 0.25rem;
-        }
-
-        .table-actions {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            display: flex;
-            gap: 0.25rem;
-        }
-
         /* Menu */
         .menu-categories {
             display: grid;
@@ -463,7 +305,6 @@
             border-radius: 0.75rem;
             padding: 1rem;
             background: white;
-            position: relative;
         }
 
         .category-title {
@@ -473,9 +314,6 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #ea580c;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .menu-item {
@@ -488,20 +326,11 @@
             margin-bottom: 0.5rem;
             cursor: pointer;
             transition: all 0.2s;
-            position: relative;
         }
 
         .menu-item:hover {
             background-color: #ffedd5;
             border-color: #ea580c;
-        }
-
-        .menu-item-actions {
-            display: flex;
-            gap: 0.25rem;
-            position: absolute;
-            right: 0.5rem;
-            top: 0.5rem;
         }
 
         /* Order Summary */
@@ -726,11 +555,6 @@
             font-size: 0.875rem;
         }
 
-        .chart-container {
-            height: 300px;
-            margin: 1rem 0;
-        }
-
         .date-picker {
             display: flex;
             gap: 1rem;
@@ -743,28 +567,6 @@
             border: 2px solid #d1d5db;
             border-radius: 0.5rem;
             font-size: 1rem;
-        }
-
-        /* Management Grid */
-        .management-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .management-card {
-            border: 2px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            background: white;
-        }
-
-        .management-card h3 {
-            color: #ea580c;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #ea580c;
         }
 
         /* Modal */
@@ -795,18 +597,35 @@
             overflow-y: auto;
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ea580c;
-            margin-bottom: 1rem;
+        /* Buttons */
+        .btn-warning {
+            background-color: #f59e0b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        /* Form Grid */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         /* Responsive */
@@ -822,10 +641,6 @@
             }
 
             .reports-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .management-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -855,65 +670,47 @@
                 flex-direction: column;
             }
 
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
             .action-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
         }
     </style>
-    <!-- Chart.js for Reports -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Setup Wizard -->
-    <div id="setup-wizard" class="setup-wizard hidden">
+    <div id="setup-wizard" class="setup-wizard">
         <div class="wizard-content">
             <h1 class="wizard-title">🍽️ Restaurant POS Setup</h1>
-            <p class="wizard-subtitle">Configure your POS system</p>
-
-            <div class="setup-step">
-                <h3><span class="step-number">1</span> Choose Sync Method</h3>
-                <div class="setup-option" onclick="selectSyncMethod('firebase')">
-                    <input type="radio" name="sync" id="sync-firebase" checked>
-                    <label for="sync-firebase">
-                        <strong>Firebase Sync (Recommended)</strong><br>
-                        <small>Real-time sync across all devices</small>
-                    </label>
-                </div>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">Configure your restaurant</p>
+            
+            <div class="input-group">
+                <label for="restaurant-name">Restaurant Name:</label>
+                <input type="text" id="restaurant-name" class="input-field" placeholder="My Restaurant" value="My Restaurant">
             </div>
 
-            <div id="firebase-setup" class="setup-step">
-                <h3><span class="step-number">2</span> Restaurant Info</h3>
-                
-                <div class="input-group">
-                    <label for="restaurant-name">Restaurant Name:</label>
-                    <input type="text" id="restaurant-name" class="input-field" placeholder="My Restaurant">
-                </div>
-
-                <div class="input-group">
-                    <label for="table-count">Number of Tables:</label>
-                    <input type="number" id="table-count" class="input-field" min="1" max="50" value="10">
-                </div>
-
-                <div class="info-box">
-                    <p><strong>Firebase is already configured!</strong></p>
-                    <p>Your data will sync automatically across all devices.</p>
-                </div>
+            <div class="input-group">
+                <label for="table-count">Number of Tables:</label>
+                <input type="number" id="table-count" class="input-field" min="1" max="50" value="10">
             </div>
 
-            <button class="btn-primary" onclick="completeSetup()">Start Using POS System</button>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #f3f4f6; border-radius: 0.5rem;">
+                <p style="font-size: 0.875rem; color: #374151;">
+                    <strong>Firebase is pre-configured!</strong> Your data will sync automatically across devices.
+                </p>
+            </div>
+
+            <button class="btn-primary" onclick="completeSetup()">Start POS System</button>
+            
+            <button class="btn-secondary" onclick="useWithoutSetup()">Use Without Setup (Demo)</button>
         </div>
     </div>
 
     <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
+    <div id="loading-screen" class="loading-screen hidden">
         <div>
             <div class="spinner"></div>
-            <p style="text-align: center; font-weight: 600;">Initializing POS System...</p>
+            <p style="text-align: center; font-weight: 600;">Loading...</p>
         </div>
     </div>
 
@@ -934,10 +731,6 @@
                     <button class="nav-btn" onclick="switchTab('checkout')">
                         <span>💰</span>
                         <span>Checkout</span>
-                    </button>
-                    <button class="nav-btn" onclick="switchTab('management')">
-                        <span>⚙️</span>
-                        <span>Management</span>
                     </button>
                     <button class="nav-btn" onclick="switchTab('expenses')">
                         <span>📊</span>
@@ -965,8 +758,8 @@
                 <div class="action-header">
                     <h2 class="section-title">Select Table</h2>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn-warning" onclick="showEditTablesModal()">Edit Tables</button>
-                        <button class="btn-success" onclick="addNewTable()">+ Add Table</button>
+                        <button class="btn-warning" onclick="editTables()">Edit Tables</button>
+                        <button class="btn-success" onclick="addTable()">+ Add Table</button>
                     </div>
                 </div>
                 <div id="tables-grid" class="tables-grid"></div>
@@ -974,7 +767,7 @@
                 <div id="menu-section" style="display: none;">
                     <div class="action-header">
                         <h2 class="section-title">Menu - Table <span id="selected-table-num"></span></h2>
-                        <button class="btn-warning" onclick="showEditMenuModal()">Edit Menu</button>
+                        <button class="btn-warning" onclick="editMenu()">Edit Menu</button>
                     </div>
                     <div id="menu-categories" class="menu-categories"></div>
                 </div>
@@ -1024,43 +817,6 @@
                         
                         <button class="btn-submit" onclick="processPayment()">Process Payment</button>
                         <button class="btn-cancel" onclick="cancelCheckout()">Cancel</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Management Tab -->
-            <div id="management-tab" class="tab-content">
-                <h2 class="section-title">Management</h2>
-                
-                <div class="management-grid">
-                    <!-- Menu Management -->
-                    <div class="management-card">
-                        <h3>📋 Menu Management</h3>
-                        <p>Add, edit, or remove menu items and categories.</p>
-                        <button class="btn-primary" style="margin-top: 1rem;" onclick="showEditMenuModal()">Edit Menu</button>
-                        <button class="btn-secondary" style="margin-top: 0.5rem;" onclick="showAddCategoryModal()">Add Category</button>
-                    </div>
-
-                    <!-- Table Management -->
-                    <div class="management-card">
-                        <h3>🪑 Table Management</h3>
-                        <p>Configure tables, capacities, and statuses.</p>
-                        <button class="btn-primary" style="margin-top: 1rem;" onclick="showEditTablesModal()">Edit Tables</button>
-                        <button class="btn-secondary" style="margin-top: 0.5rem;" onclick="addNewTable()">Add Table</button>
-                    </div>
-
-                    <!-- Staff Management -->
-                    <div class="management-card">
-                        <h3>👥 Staff Management</h3>
-                        <p>Manage staff roles and permissions.</p>
-                        <button class="btn-primary" style="margin-top: 1rem;" onclick="showStaffModal()">Manage Staff</button>
-                    </div>
-
-                    <!-- Inventory Management -->
-                    <div class="management-card">
-                        <h3>📦 Inventory</h3>
-                        <p>Track ingredients and stock levels.</p>
-                        <button class="btn-primary" style="margin-top: 1rem;" onclick="showInventoryModal()">View Inventory</button>
                     </div>
                 </div>
             </div>
@@ -1127,9 +883,6 @@
                         <div class="report-title">💰 Expenses Summary</div>
                         <div class="stat-value" id="total-expenses-report">Rs.0.00</div>
                         <div class="stat-label">Total Expenses</div>
-                        <div class="chart-container">
-                            <canvas id="expensesChart"></canvas>
-                        </div>
                     </div>
 
                     <!-- Top Items -->
@@ -1156,14 +909,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Hourly Sales -->
-                    <div class="report-card">
-                        <div class="report-title">⏰ Hourly Sales</div>
-                        <div class="chart-container">
-                            <canvas id="hourlyChart"></canvas>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Detailed Reports -->
@@ -1172,10 +917,8 @@
                     <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
                         <button class="btn-primary" onclick="exportSalesReport()">Export Sales Report</button>
                         <button class="btn-secondary" onclick="exportExpensesReport()">Export Expenses Report</button>
-                        <button class="btn-secondary" onclick="exportInventoryReport()">Export Inventory Report</button>
                         <button class="btn-secondary" onclick="exportMenuReport()">Export Menu Report</button>
                     </div>
-                    <div id="detailed-reports"></div>
                 </div>
             </div>
         </div>
@@ -1184,7 +927,7 @@
     <!-- Add Expense Modal -->
     <div id="add-expense-modal" class="modal hidden">
         <div class="modal-content">
-            <h2 class="modal-title">Add Expense</h2>
+            <h2 style="margin-bottom: 1rem;">Add Expense</h2>
             <div class="input-group">
                 <label for="expense-description">Description:</label>
                 <input type="text" id="expense-description" class="input-field" placeholder="What was the expense for?">
@@ -1200,8 +943,6 @@
                     <option value="Utilities">Utilities</option>
                     <option value="Salary">Salaries</option>
                     <option value="Rent">Rent</option>
-                    <option value="Maintenance">Maintenance</option>
-                    <option value="Marketing">Marketing</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -1216,102 +957,31 @@
         </div>
     </div>
 
-    <!-- Edit Menu Modal -->
-    <div id="edit-menu-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 class="modal-title">Edit Menu</h2>
-            <div style="margin-bottom: 1rem;">
-                <button class="btn-success" onclick="showAddMenuItemModal()">+ Add Menu Item</button>
-            </div>
-            <div id="menu-edit-list" style="max-height: 400px; overflow-y: auto;">
-                <!-- Menu items will be loaded here -->
-            </div>
-            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                <button class="btn-primary" onclick="saveMenuChanges()">Save Changes</button>
-                <button class="btn-cancel" onclick="hideEditMenuModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Menu Item Modal -->
-    <div id="add-menu-item-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 class="modal-title">Add Menu Item</h2>
-            <div class="form-grid">
-                <div class="input-group">
-                    <label for="item-name">Item Name:</label>
-                    <input type="text" id="item-name" class="input-field" placeholder="e.g., Chicken Momo">
-                </div>
-                <div class="input-group">
-                    <label for="item-price">Price (Rs.):</label>
-                    <input type="number" id="item-price" class="input-field" step="0.01" min="0" value="100">
-                </div>
-                <div class="input-group">
-                    <label for="item-category">Category:</label>
-                    <input type="text" id="item-category" class="input-field" placeholder="e.g., Main Course" list="categories-list">
-                    <datalist id="categories-list">
-                        <option value="Main Course">
-                        <option value="Starters">
-                        <option value="Sides">
-                        <option value="Drinks">
-                        <option value="Desserts">
-                    </datalist>
-                </div>
-                <div class="input-group">
-                    <label for="item-description">Description:</label>
-                    <textarea id="item-description" class="input-field" placeholder="Optional description"></textarea>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                <button class="btn-primary" onclick="saveMenuItem()">Add Item</button>
-                <button class="btn-cancel" onclick="hideAddMenuItemModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Tables Modal -->
-    <div id="edit-tables-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 class="modal-title">Edit Tables</h2>
-            <div id="tables-edit-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 1rem;">
-                <!-- Tables will be loaded here -->
-            </div>
-            <div style="display: flex; gap: 1rem;">
-                <button class="btn-success" onclick="addNewTable()">+ Add Table</button>
-                <button class="btn-primary" onclick="saveTablesChanges()">Save Changes</button>
-                <button class="btn-cancel" onclick="hideEditTablesModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">
         <div class="modal-content">
-            <h2 class="modal-title">Settings</h2>
-            <div class="setup-step">
-                <h3>Restaurant Settings</h3>
-                <div class="input-group">
-                    <label for="settings-restaurant-name">Restaurant Name:</label>
-                    <input type="text" id="settings-restaurant-name" class="input-field">
-                </div>
-                <div class="input-group">
-                    <label for="settings-table-count">Number of Tables:</label>
-                    <input type="number" id="settings-table-count" class="input-field" min="1" max="50">
-                </div>
-                <button class="btn-secondary" onclick="updateRestaurantSettings()">Update Settings</button>
+            <h2 style="margin-bottom: 1rem;">Settings</h2>
+            
+            <div class="input-group">
+                <label for="settings-restaurant-name">Restaurant Name:</label>
+                <input type="text" id="settings-restaurant-name" class="input-field">
             </div>
-            <div class="setup-step">
-                <h3>Sync Status</h3>
-                <div id="sync-status" style="padding: 0.5rem; background: #f3f4f6; border-radius: 0.25rem; font-size: 0.875rem;">
-                    Firebase: Connected ✓
-                </div>
+            
+            <div class="input-group">
+                <label for="settings-table-count">Number of Tables:</label>
+                <input type="number" id="settings-table-count" class="input-field" min="1" max="50">
             </div>
-            <div class="setup-step">
-                <h3>Danger Zone</h3>
-                <button class="btn-danger" onclick="resetAllData()">Reset All Data</button>
+            
+            <div style="margin: 1rem 0; padding: 1rem; background: #f3f4f6; border-radius: 0.5rem;">
+                <p style="font-size: 0.875rem; color: #374151;">
+                    <strong>Firebase Status:</strong> <span id="firebase-status">Connected</span>
+                </p>
             </div>
-            <div style="margin-top: 1rem;">
-                <button class="btn-primary" onclick="hideSettingsModal()">Close</button>
+            
+            <div style="margin-top: 1.5rem;">
+                <button class="btn-primary" onclick="updateSettings()">Save Settings</button>
+                <button class="btn-secondary" style="margin-top: 0.5rem;" onclick="hideSettingsModal()">Cancel</button>
+                <button class="btn-danger" style="margin-top: 1rem;" onclick="resetData()">Reset All Data</button>
             </div>
         </div>
     </div>
@@ -1328,11 +998,11 @@
             measurementId: "G-P2ZK2EYNJK"
         };
 
-        // Initialize Firebase
-        let app, db, auth, analytics;
-        let syncEnabled = true;
-        let isOnline = true;
-        
+        // Initialize Firebase (simple approach)
+        let firebaseApp;
+        let db;
+        let syncEnabled = false;
+
         // State
         let state = {
             restaurantName: 'My Restaurant',
@@ -1345,143 +1015,61 @@
             completedTransactions: [],
             expenses: [],
             paymentMethod: '',
-            selectedCheckoutTable: null,
-            reports: {
-                startDate: new Date(),
-                endDate: new Date()
-            }
+            selectedCheckoutTable: null
         };
 
-        // Initialize Firebase
+        // Initialize Firebase with error handling
         async function initializeFirebase() {
             try {
-                app = firebase.initializeApp(firebaseConfig);
+                firebaseApp = firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
-                auth = firebase.auth();
-                analytics = firebase.analytics();
-                
-                // Sign in anonymously
-                await auth.signInAnonymously();
-                
+                syncEnabled = true;
                 console.log('Firebase initialized successfully');
-                setupRealtimeListeners();
-                updateSyncBadge('Online', true);
-                
                 return true;
             } catch (error) {
-                console.error('Firebase initialization error:', error);
-                updateSyncBadge('Offline', false);
+                console.log('Firebase init error, using local storage:', error.message);
+                syncEnabled = false;
                 return false;
             }
         }
 
-        // Setup realtime listeners
-        function setupRealtimeListeners() {
-            if (!db) return;
-
-            // Listen for tables changes
-            db.collection('tables').orderBy('number').onSnapshot((snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    const table = change.doc.data();
-                    const localTable = state.tables.find(t => t.id === table.id);
-                    
-                    if (change.type === 'added' || change.type === 'modified') {
-                        if (!localTable || table.updatedAt > localTable.updatedAt) {
-                            const index = state.tables.findIndex(t => t.id === table.id);
-                            if (index >= 0) {
-                                state.tables[index] = table;
-                            } else {
-                                state.tables.push(table);
-                            }
-                        }
-                    } else if (change.type === 'removed') {
-                        state.tables = state.tables.filter(t => t.id !== table.id);
-                    }
-                });
-                renderTables();
-            });
-
-            // Listen for menu items
-            db.collection('menuItems').orderBy('category').onSnapshot((snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    const item = change.doc.data();
-                    const localItem = state.menuItems.find(i => i.id === item.id);
-                    
-                    if (change.type === 'added' || change.type === 'modified') {
-                        if (!localItem || item.updatedAt > localItem.updatedAt) {
-                            const index = state.menuItems.findIndex(i => i.id === item.id);
-                            if (index >= 0) {
-                                state.menuItems[index] = item;
-                            } else {
-                                state.menuItems.push(item);
-                            }
-                        }
-                    } else if (change.type === 'removed') {
-                        state.menuItems = state.menuItems.filter(i => i.id !== item.id);
-                    }
-                });
-                renderMenu();
-            });
-
-            // Listen for kitchen orders
-            db.collection('kitchenOrders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
-                state.kitchenOrders = [];
-                snapshot.forEach(doc => {
-                    state.kitchenOrders.push(doc.data());
-                });
-                renderKitchen();
-            });
-
-            // Listen for transactions
-            db.collection('transactions').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
-                state.completedTransactions = [];
-                snapshot.forEach(doc => {
-                    state.completedTransactions.push(doc.data());
-                });
-                generateReports();
-            });
-
-            // Listen for expenses
-            db.collection('expenses').orderBy('date', 'desc').onSnapshot((snapshot) => {
-                state.expenses = [];
-                snapshot.forEach(doc => {
-                    state.expenses.push(doc.data());
-                });
-                renderExpenses();
-                generateReports();
-            });
-        }
-
-        // Sync data to Firebase
-        async function syncToFirebase(collection, data) {
-            if (!syncEnabled || !db) return;
-
-            try {
-                const docRef = db.collection(collection).doc(data.id.toString());
-                await docRef.set({
-                    ...data,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                return true;
-            } catch (error) {
-                console.error('Sync error:', error);
-                updateSyncBadge('Offline', false);
-                return false;
+        // Save data to Firebase or localStorage
+        async function saveData(key, data) {
+            if (syncEnabled && db) {
+                try {
+                    await db.collection(key).doc('data').set({
+                        data: data,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log(`Saved to Firebase: ${key}`);
+                } catch (error) {
+                    console.log('Firebase save failed, using localStorage:', error);
+                    localStorage.setItem(key, JSON.stringify(data));
+                }
+            } else {
+                localStorage.setItem(key, JSON.stringify(data));
             }
         }
 
-        // Update sync badge
-        function updateSyncBadge(text, isOnline) {
-            const badge = document.getElementById('sync-badge');
-            badge.textContent = isOnline ? `☁️ ${text}` : `⚠️ ${text}`;
-            badge.classList.toggle('offline', !isOnline);
+        // Load data from Firebase or localStorage
+        async function loadData(key, defaultValue = []) {
+            if (syncEnabled && db) {
+                try {
+                    const doc = await db.collection(key).doc('data').get();
+                    if (doc.exists) {
+                        console.log(`Loaded from Firebase: ${key}`);
+                        return doc.data().data || defaultValue;
+                    }
+                } catch (error) {
+                    console.log('Firebase load failed, using localStorage:', error);
+                }
+            }
+            
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : defaultValue;
         }
 
         // Setup Wizard
-        function selectSyncMethod(method) {
-            document.getElementById('sync-firebase').checked = (method === 'firebase');
-        }
-
         async function completeSetup() {
             const restaurantName = document.getElementById('restaurant-name').value || 'My Restaurant';
             const tableCount = parseInt(document.getElementById('table-count').value) || 10;
@@ -1489,75 +1077,131 @@
             state.restaurantName = restaurantName;
             state.tableCount = tableCount;
 
-            // Initialize tables
-            for (let i = 1; i <= tableCount; i++) {
-                const table = {
-                    id: i,
-                    number: i,
-                    name: `Table ${i}`,
-                    capacity: 4,
-                    status: 'vacant',
-                    orders: [],
-                    notes: '',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                await syncToFirebase('tables', table);
-            }
-
-            // Add default menu items if none exist
-            const menuSnapshot = await db.collection('menuItems').get();
-            if (menuSnapshot.empty) {
-                const defaultMenu = [
-                    { id: 1, name: 'Veg Momo', price: 150, category: 'Main Course', description: 'Steamed dumplings with vegetable filling' },
-                    { id: 2, name: 'Chicken Momo', price: 180, category: 'Main Course', description: 'Steamed dumplings with chicken filling' },
-                    { id: 3, name: 'Chowmein', price: 120, category: 'Main Course', description: 'Stir-fried noodles with vegetables' },
-                    { id: 4, name: 'Fried Rice', price: 130, category: 'Main Course', description: 'Fried rice with mixed vegetables' },
-                    { id: 5, name: 'Chicken Chilly', price: 250, category: 'Main Course', description: 'Spicy chicken with bell peppers' },
-                    { id: 6, name: 'Veg Salad', price: 100, category: 'Starters', description: 'Fresh vegetable salad' },
-                    { id: 7, name: 'French Fries', price: 80, category: 'Sides', description: 'Crispy fried potatoes' },
-                    { id: 8, name: 'Coke', price: 60, category: 'Drinks', description: '330ml can' },
-                    { id: 9, name: 'Mineral Water', price: 20, category: 'Drinks', description: '1L bottle' },
-                    { id: 10, name: 'Ice Cream', price: 120, category: 'Desserts', description: 'Vanilla ice cream' }
-                ];
-
-                for (const item of defaultMenu) {
-                    await syncToFirebase('menuItems', {
-                        ...item,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    });
-                }
-            }
-
-            document.getElementById('setup-wizard').classList.add('hidden');
-            await initializeApp();
-        }
-
-        // Initialize App
-        async function initializeApp() {
-            document.getElementById('loading-screen').classList.remove('hidden');
-
             // Initialize Firebase
             await initializeFirebase();
 
-            // Set default date range for reports
-            const today = new Date();
-            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            state.reports.startDate = startOfMonth;
-            state.reports.endDate = today;
+            // Create tables
+            state.tables = [];
+            for (let i = 1; i <= tableCount; i++) {
+                state.tables.push({
+                    id: i,
+                    number: i,
+                    status: 'vacant',
+                    orders: []
+                });
+            }
 
-            // Set date picker values
-            document.getElementById('report-start-date').value = startOfMonth.toISOString().split('T')[0];
-            document.getElementById('report-end-date').value = today.toISOString().split('T')[0];
+            // Default menu items
+            state.menuItems = [
+                { id: 1, name: 'Momo', price: 150, category: 'Main' },
+                { id: 2, name: 'Chowmein', price: 120, category: 'Main' },
+                { id: 3, name: 'Fried Rice', price: 180, category: 'Main' },
+                { id: 4, name: 'Chicken Chilly', price: 250, category: 'Main' },
+                { id: 5, name: 'Veg Salad', price: 100, category: 'Starter' },
+                { id: 6, name: 'French Fries', price: 80, category: 'Side' },
+                { id: 7, name: 'Coke', price: 60, category: 'Drink' },
+                { id: 8, name: 'Water', price: 20, category: 'Drink' },
+                { id: 9, name: 'Ice Cream', price: 120, category: 'Dessert' },
+                { id: 10, name: 'Kheer', price: 100, category: 'Dessert' }
+            ];
+
+            // Save initial data
+            await saveData('config', { restaurantName, tableCount });
+            await saveData('tables', state.tables);
+            await saveData('menuItems', state.menuItems);
+            await saveData('kitchenOrders', []);
+            await saveData('completedTransactions', []);
+            await saveData('expenses', []);
+
+            document.getElementById('setup-wizard').classList.add('hidden');
+            startApp();
+        }
+
+        function useWithoutSetup() {
+            // Use default values without Firebase
+            syncEnabled = false;
+            state.restaurantName = 'Demo Restaurant';
+            state.tableCount = 10;
+            
+            // Create tables
+            state.tables = [];
+            for (let i = 1; i <= state.tableCount; i++) {
+                state.tables.push({
+                    id: i,
+                    number: i,
+                    status: 'vacant',
+                    orders: []
+                });
+            }
+
+            // Default menu items
+            state.menuItems = [
+                { id: 1, name: 'Momo', price: 150, category: 'Main' },
+                { id: 2, name: 'Chowmein', price: 120, category: 'Main' },
+                { id: 3, name: 'Fried Rice', price: 180, category: 'Main' },
+                { id: 4, name: 'Chicken Chilly', price: 250, category: 'Main' },
+                { id: 5, name: 'Veg Salad', price: 100, category: 'Starter' },
+                { id: 6, name: 'French Fries', price: 80, category: 'Side' },
+                { id: 7, name: 'Coke', price: 60, category: 'Drink' },
+                { id: 8, name: 'Water', price: 20, category: 'Drink' },
+                { id: 9, name: 'Ice Cream', price: 120, category: 'Dessert' },
+                { id: 10, name: 'Kheer', price: 100, category: 'Dessert' }
+            ];
+
+            document.getElementById('setup-wizard').classList.add('hidden');
+            startApp();
+        }
+
+        // Start App
+        async function startApp() {
+            document.getElementById('loading-screen').classList.remove('hidden');
+            
+            // Try to load existing data
+            try {
+                const config = await loadData('config');
+                if (config) {
+                    state.restaurantName = config.restaurantName || state.restaurantName;
+                    state.tableCount = config.tableCount || state.tableCount;
+                }
+
+                const tables = await loadData('tables');
+                if (tables && tables.length > 0) {
+                    state.tables = tables;
+                }
+
+                const menuItems = await loadData('menuItems');
+                if (menuItems && menuItems.length > 0) {
+                    state.menuItems = menuItems;
+                }
+
+                state.kitchenOrders = await loadData('kitchenOrders', []);
+                state.completedTransactions = await loadData('completedTransactions', []);
+                state.expenses = await loadData('expenses', []);
+
+                // Update sync badge
+                document.getElementById('sync-badge').textContent = syncEnabled ? '☁️ Online' : '📱 Local';
+                if (!syncEnabled) {
+                    document.getElementById('sync-badge').classList.add('offline');
+                }
+            } catch (error) {
+                console.log('Error loading data:', error);
+            }
 
             document.getElementById('loading-screen').classList.add('hidden');
             document.getElementById('main-app').style.display = 'block';
 
-            generateReports();
+            render();
         }
 
         // Render Functions
+        function render() {
+            renderTables();
+            renderKitchen();
+            renderCheckout();
+            renderExpenses();
+            generateReports();
+        }
+
         function renderTables() {
             const grid = document.getElementById('tables-grid');
             if (!grid) return;
@@ -1566,65 +1210,44 @@
             const sortedTables = [...state.tables].sort((a, b) => a.number - b.number);
             
             grid.innerHTML = sortedTables.map(table => `
-                <div class="table-card ${table.status === 'occupied' ? 'occupied' : ''} ${table.status === 'reserved' ? 'reserved' : ''} ${state.selectedTable === table.number ? 'selected' : ''}"
+                <div class="table-card ${table.status === 'occupied' ? 'occupied' : ''} ${state.selectedTable === table.number ? 'selected' : ''}"
                      onclick="selectTable(${table.number})">
-                    <div class="table-actions">
-                        <button class="btn-small btn-warning" onclick="editTable(${table.id}); event.stopPropagation()">✏️</button>
-                        <button class="btn-small btn-danger" onclick="deleteTable(${table.id}); event.stopPropagation()">🗑️</button>
-                    </div>
                     <div class="table-number">${table.number}</div>
-                    <div class="table-status">${table.status.toUpperCase()}</div>
-                    <div class="table-capacity">👥 ${table.capacity || 4} seats</div>
-                    ${table.notes ? `<div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">${table.notes}</div>` : ''}
+                    <div class="table-status">${table.status}</div>
                 </div>
             `).join('');
-
-            // Also render tables for checkout
-            renderCheckout();
         }
 
         function selectTable(tableNum) {
-            state.selectedTable = tableNum;
             const table = state.tables.find(t => t.number === tableNum);
+            if (!table) return;
+
+            state.selectedTable = tableNum;
+            state.currentOrder = [...table.orders];
             
-            if (table) {
-                state.currentOrder = table.orders || [];
-                document.getElementById('selected-table-num').textContent = tableNum;
-                document.getElementById('menu-section').style.display = 'block';
-                document.getElementById('order-summary').style.display = 'block';
-                
-                renderMenu();
-                renderOrderSummary();
-                renderTables();
-            }
+            document.getElementById('selected-table-num').textContent = tableNum;
+            document.getElementById('menu-section').style.display = 'block';
+            document.getElementById('order-summary').style.display = 'block';
+            
+            renderMenu();
+            renderOrderSummary();
+            renderTables();
         }
 
         function renderMenu() {
             const categories = [...new Set(state.menuItems.map(item => item.category))];
             const menuContainer = document.getElementById('menu-categories');
-            
             if (!menuContainer) return;
 
             menuContainer.innerHTML = categories.map(category => `
                 <div class="category-section">
-                    <div class="category-title">
-                        ${category}
-                        <button class="btn-small btn-warning" onclick="editCategory('${category}')">✏️</button>
-                    </div>
+                    <div class="category-title">${category}</div>
                     ${state.menuItems
                         .filter(item => item.category === category)
-                        .sort((a, b) => a.name.localeCompare(b.name))
                         .map(item => `
                             <div class="menu-item" onclick="addToOrder(${item.id})">
-                                <div class="menu-item-actions">
-                                    <button class="btn-small btn-warning" onclick="editMenuItem(${item.id}); event.stopPropagation()">✏️</button>
-                                    <button class="btn-small btn-danger" onclick="deleteMenuItem(${item.id}); event.stopPropagation()">🗑️</button>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">${item.name}</div>
-                                    ${item.description ? `<div style="font-size: 0.75rem; color: #6b7280;">${item.description}</div>` : ''}
-                                </div>
-                                <div style="font-weight: 700; color: #ea580c;">Rs.${item.price}</div>
+                                <span>${item.name}</span>
+                                <span>Rs.${item.price}</span>
                             </div>
                         `).join('')}
                 </div>
@@ -1695,24 +1318,19 @@
 
             table.status = 'occupied';
             table.orders = [...state.currentOrder];
-            table.updatedAt = new Date().toISOString();
 
             const kitchenOrder = {
                 id: Date.now(),
                 tableNumber: state.selectedTable,
-                tableId: table.id,
                 items: [...state.currentOrder],
                 status: 'pending',
-                timestamp: new Date().toLocaleTimeString(),
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                timestamp: new Date().toLocaleTimeString()
             };
 
             state.kitchenOrders.push(kitchenOrder);
 
-            // Sync to Firebase
-            await syncToFirebase('tables', table);
-            await syncToFirebase('kitchenOrders', kitchenOrder);
+            await saveData('tables', state.tables);
+            await saveData('kitchenOrders', state.kitchenOrders);
 
             state.currentOrder = [];
             state.selectedTable = null;
@@ -1721,7 +1339,7 @@
             document.getElementById('order-summary').style.display = 'none';
 
             alert('Order submitted to kitchen!');
-            renderTables();
+            render();
         }
 
         function cancelOrder() {
@@ -1732,10 +1350,8 @@
             renderTables();
         }
 
-        // Kitchen Functions
         function renderKitchen() {
             const container = document.getElementById('kitchen-orders');
-            
             if (!container) return;
 
             if (state.kitchenOrders.length === 0) {
@@ -1752,15 +1368,11 @@
                     ${order.items.map(item => `
                         <div class="kitchen-order-item">
                             <strong>${item.name}</strong> x${item.quantity}
-                            <div style="font-size: 0.875rem; color: #6b7280;">Rs.${(item.price * item.quantity).toFixed(2)}</div>
                         </div>
                     `).join('')}
-                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                        <button class="btn-primary" style="flex: 1;" onclick="markOrderReady(${order.id})">
-                            ${order.status === 'pending' ? 'Mark Ready' : 'Ready ✓'}
-                        </button>
-                        <button class="btn-danger" onclick="cancelKitchenOrder(${order.id})">Cancel</button>
-                    </div>
+                    <button class="btn-submit" style="margin-top: 1rem;" onclick="markOrderReady(${order.id})">
+                        ${order.status === 'pending' ? 'Mark Ready' : 'Ready ✓'}
+                    </button>
                 </div>
             `).join('');
         }
@@ -1769,39 +1381,14 @@
             const order = state.kitchenOrders.find(o => o.id === orderId);
             if (order) {
                 order.status = 'ready';
-                order.updatedAt = new Date().toISOString();
-                await syncToFirebase('kitchenOrders', order);
+                await saveData('kitchenOrders', state.kitchenOrders);
                 renderKitchen();
             }
         }
 
-        async function cancelKitchenOrder(orderId) {
-            if (!confirm('Cancel this order?')) return;
-            
-            const order = state.kitchenOrders.find(o => o.id === orderId);
-            if (order) {
-                // Update table status
-                const table = state.tables.find(t => t.number === order.tableNumber);
-                if (table) {
-                    table.status = 'vacant';
-                    table.orders = [];
-                    table.updatedAt = new Date().toISOString();
-                    await syncToFirebase('tables', table);
-                }
-                
-                // Remove from kitchen orders
-                state.kitchenOrders = state.kitchenOrders.filter(o => o.id !== orderId);
-                await db.collection('kitchenOrders').doc(orderId.toString()).delete();
-                renderKitchen();
-                renderTables();
-            }
-        }
-
-        // Checkout Functions
         function renderCheckout() {
             const occupiedTables = state.tables.filter(t => t.status === 'occupied');
             const container = document.getElementById('checkout-tables');
-
             if (!container) return;
 
             if (occupiedTables.length === 0) {
@@ -1816,7 +1403,6 @@
                         <h3>Table ${table.number}</h3>
                         <p>Items: ${table.orders.length}</p>
                         <p><strong>Total: Rs.${total.toFixed(2)}</strong></p>
-                        ${table.notes ? `<p style="font-size: 0.875rem; color: #6b7280;">${table.notes}</p>` : ''}
                     </div>
                 `;
             }).join('');
@@ -1892,33 +1478,25 @@
                 total: total,
                 paymentMethod: state.paymentMethod,
                 cashAmount: cashAmount,
-                qrAmount: qrAmount,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                qrAmount: qrAmount
             };
 
-            // Add to transactions
-            await syncToFirebase('transactions', transaction);
+            state.completedTransactions.push(transaction);
 
             // Clear table
             table.status = 'vacant';
             table.orders = [];
-            table.updatedAt = new Date().toISOString();
-            await syncToFirebase('tables', table);
 
             // Remove from kitchen orders
-            const kitchenOrder = state.kitchenOrders.find(o => o.tableNumber === state.selectedCheckoutTable);
-            if (kitchenOrder) {
-                await db.collection('kitchenOrders').doc(kitchenOrder.id.toString()).delete();
-            }
+            state.kitchenOrders = state.kitchenOrders.filter(o => o.tableNumber !== state.selectedCheckoutTable);
 
-            state.completedTransactions.push(transaction);
+            await saveData('tables', state.tables);
+            await saveData('kitchenOrders', state.kitchenOrders);
+            await saveData('completedTransactions', state.completedTransactions);
 
             alert('Payment processed successfully!');
             cancelCheckout();
-            renderTables();
-            renderCheckout();
-            generateReports();
+            render();
         }
 
         function cancelCheckout() {
@@ -1934,7 +1512,190 @@
             document.getElementById('qr-amount').value = '';
         }
 
+        // Table Management
+        function editTables() {
+            const tableCount = prompt('Enter number of tables:', state.tableCount);
+            if (tableCount && !isNaN(tableCount)) {
+                const newCount = parseInt(tableCount);
+                if (newCount > 0 && newCount <= 50) {
+                    // Update tables
+                    if (newCount > state.tables.length) {
+                        // Add new tables
+                        for (let i = state.tables.length + 1; i <= newCount; i++) {
+                            state.tables.push({
+                                id: i,
+                                number: i,
+                                status: 'vacant',
+                                orders: []
+                            });
+                        }
+                    } else if (newCount < state.tables.length) {
+                        // Remove extra tables (keep first n tables)
+                        state.tables = state.tables.slice(0, newCount);
+                    }
+                    
+                    state.tableCount = newCount;
+                    saveData('tables', state.tables);
+                    saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
+                    renderTables();
+                    alert(`Updated to ${newCount} tables`);
+                }
+            }
+        }
+
+        function addTable() {
+            const tableNumber = prompt('Enter table number:');
+            if (tableNumber && !isNaN(tableNumber)) {
+                const num = parseInt(tableNumber);
+                if (num > 0) {
+                    // Check if table already exists
+                    if (state.tables.some(t => t.number === num)) {
+                        alert(`Table ${num} already exists`);
+                        return;
+                    }
+                    
+                    state.tables.push({
+                        id: Date.now(),
+                        number: num,
+                        status: 'vacant',
+                        orders: []
+                    });
+                    
+                    // Sort tables by number
+                    state.tables.sort((a, b) => a.number - b.number);
+                    state.tableCount = state.tables.length;
+                    
+                    saveData('tables', state.tables);
+                    saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
+                    renderTables();
+                    alert(`Added Table ${num}`);
+                }
+            }
+        }
+
+        // Menu Management
+        function editMenu() {
+            const action = prompt('Menu Management:\n1. Add Item\n2. Edit Item\n3. Delete Item\n\nEnter choice (1-3):');
+            
+            switch(action) {
+                case '1':
+                    addMenuItem();
+                    break;
+                case '2':
+                    editMenuItem();
+                    break;
+                case '3':
+                    deleteMenuItem();
+                    break;
+            }
+        }
+
+        function addMenuItem() {
+            const name = prompt('Enter item name:');
+            if (!name) return;
+            
+            const price = prompt('Enter price:');
+            if (!price || isNaN(price)) return;
+            
+            const category = prompt('Enter category (Main/Starter/Side/Drink/Dessert):', 'Main');
+            
+            state.menuItems.push({
+                id: Date.now(),
+                name: name,
+                price: parseFloat(price),
+                category: category
+            });
+            
+            saveData('menuItems', state.menuItems);
+            alert(`Added ${name} to menu`);
+            renderMenu();
+        }
+
+        function editMenuItem() {
+            const itemList = state.menuItems.map((item, index) => `${index + 1}. ${item.name} - Rs.${item.price}`).join('\n');
+            const choice = prompt(`Select item to edit:\n\n${itemList}\n\nEnter number:`);
+            
+            if (choice && !isNaN(choice)) {
+                const index = parseInt(choice) - 1;
+                if (index >= 0 && index < state.menuItems.length) {
+                    const item = state.menuItems[index];
+                    const newName = prompt('Enter new name:', item.name);
+                    if (newName === null) return;
+                    
+                    const newPrice = prompt('Enter new price:', item.price);
+                    if (newPrice === null || isNaN(newPrice)) return;
+                    
+                    const newCategory = prompt('Enter new category:', item.category);
+                    if (newCategory === null) return;
+                    
+                    item.name = newName;
+                    item.price = parseFloat(newPrice);
+                    item.category = newCategory;
+                    
+                    saveData('menuItems', state.menuItems);
+                    alert('Item updated');
+                    renderMenu();
+                }
+            }
+        }
+
+        function deleteMenuItem() {
+            const itemList = state.menuItems.map((item, index) => `${index + 1}. ${item.name} - Rs.${item.price}`).join('\n');
+            const choice = prompt(`Select item to delete:\n\n${itemList}\n\nEnter number:`);
+            
+            if (choice && !isNaN(choice)) {
+                const index = parseInt(choice) - 1;
+                if (index >= 0 && index < state.menuItems.length) {
+                    const itemName = state.menuItems[index].name;
+                    if (confirm(`Delete ${itemName}?`)) {
+                        state.menuItems.splice(index, 1);
+                        saveData('menuItems', state.menuItems);
+                        alert('Item deleted');
+                        renderMenu();
+                    }
+                }
+            }
+        }
+
         // Expense Functions
+        function showAddExpenseModal() {
+            document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('add-expense-modal').classList.remove('hidden');
+        }
+
+        function hideAddExpenseModal() {
+            document.getElementById('add-expense-modal').classList.add('hidden');
+            document.getElementById('expense-description').value = '';
+            document.getElementById('expense-amount').value = '';
+        }
+
+        async function saveExpense() {
+            const description = document.getElementById('expense-description').value;
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const category = document.getElementById('expense-category').value;
+            const date = document.getElementById('expense-date').value;
+
+            if (!description || !amount || amount <= 0) {
+                alert('Please enter valid expense details');
+                return;
+            }
+
+            const expense = {
+                id: Date.now(),
+                description: description,
+                amount: amount,
+                category: category,
+                date: date || new Date().toLocaleDateString(),
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            state.expenses.push(expense);
+            await saveData('expenses', state.expenses);
+            hideAddExpenseModal();
+            renderExpenses();
+            generateReports();
+        }
+
         function renderExpenses() {
             const total = state.expenses.reduce((sum, exp) => sum + exp.amount, 0);
             const totalElement = document.getElementById('total-expenses');
@@ -1963,244 +1724,24 @@
             `).join('');
         }
 
-        // Menu Management Functions
-        function showEditMenuModal() {
-            const modal = document.getElementById('edit-menu-modal');
-            const list = document.getElementById('menu-edit-list');
-            
-            // Group items by category
-            const itemsByCategory = {};
-            state.menuItems.forEach(item => {
-                if (!itemsByCategory[item.category]) {
-                    itemsByCategory[item.category] = [];
-                }
-                itemsByCategory[item.category].push(item);
-            });
-
-            list.innerHTML = Object.entries(itemsByCategory).map(([category, items]) => `
-                <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: #ea580c; margin-bottom: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px solid #e5e7eb;">${category}</h4>
-                    ${items.map(item => `
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.5rem;">
-                            <div>
-                                <strong>${item.name}</strong>
-                                <div style="font-size: 0.875rem; color: #6b7280;">Rs.${item.price} ${item.description ? '• ' + item.description : ''}</div>
-                            </div>
-                            <div style="display: flex; gap: 0.25rem;">
-                                <button class="btn-small btn-warning" onclick="editMenuItem(${item.id})">Edit</button>
-                                <button class="btn-small btn-danger" onclick="deleteMenuItem(${item.id})">Delete</button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-            
-            modal.classList.remove('hidden');
-        }
-
-        function hideEditMenuModal() {
-            document.getElementById('edit-menu-modal').classList.add('hidden');
-        }
-
-        function showAddMenuItemModal() {
-            document.getElementById('item-name').value = '';
-            document.getElementById('item-price').value = '';
-            document.getElementById('item-category').value = '';
-            document.getElementById('item-description').value = '';
-            document.getElementById('add-menu-item-modal').classList.remove('hidden');
-        }
-
-        function hideAddMenuItemModal() {
-            document.getElementById('add-menu-item-modal').classList.add('hidden');
-        }
-
-        async function saveMenuItem() {
-            const name = document.getElementById('item-name').value.trim();
-            const price = parseFloat(document.getElementById('item-price').value);
-            const category = document.getElementById('item-category').value.trim();
-            const description = document.getElementById('item-description').value.trim();
-
-            if (!name || !price || !category) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            // Generate ID (use timestamp for uniqueness)
-            const id = Date.now();
-
-            const menuItem = {
-                id: id,
-                name: name,
-                price: price,
-                category: category,
-                description: description,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
-            await syncToFirebase('menuItems', menuItem);
-            hideAddMenuItemModal();
-            alert('Menu item added successfully!');
-        }
-
-        async function editMenuItem(itemId) {
-            const item = state.menuItems.find(i => i.id === itemId);
-            if (!item) return;
-
-            const newName = prompt('Edit item name:', item.name);
-            if (newName === null) return;
-
-            const newPrice = parseFloat(prompt('Edit price:', item.price));
-            if (isNaN(newPrice)) return;
-
-            const newCategory = prompt('Edit category:', item.category);
-            if (newCategory === null) return;
-
-            const newDescription = prompt('Edit description:', item.description || '');
-
-            item.name = newName;
-            item.price = newPrice;
-            item.category = newCategory;
-            item.description = newDescription;
-            item.updatedAt = new Date().toISOString();
-
-            await syncToFirebase('menuItems', item);
-            alert('Menu item updated!');
-        }
-
-        async function deleteMenuItem(itemId) {
-            if (!confirm('Delete this menu item?')) return;
-
-            await db.collection('menuItems').doc(itemId.toString()).delete();
-            alert('Menu item deleted!');
-        }
-
-        function editCategory(category) {
-            const newCategory = prompt('Edit category name:', category);
-            if (newCategory && newCategory !== category) {
-                // Update all items in this category
-                const itemsToUpdate = state.menuItems.filter(item => item.category === category);
-                itemsToUpdate.forEach(async (item) => {
-                    item.category = newCategory;
-                    item.updatedAt = new Date().toISOString();
-                    await syncToFirebase('menuItems', item);
-                });
-                alert('Category updated!');
-            }
-        }
-
-        // Table Management Functions
-        function showEditTablesModal() {
-            const modal = document.getElementById('edit-tables-modal');
-            const list = document.getElementById('tables-edit-list');
-            
-            list.innerHTML = state.tables.sort((a, b) => a.number - b.number).map(table => `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.5rem;">
-                    <div>
-                        <strong>Table ${table.number}</strong>
-                        <div style="font-size: 0.875rem; color: #6b7280;">
-                            Capacity: ${table.capacity || 4} • Status: ${table.status}
-                            ${table.notes ? '• ' + table.notes : ''}
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.25rem;">
-                        <button class="btn-small btn-warning" onclick="editTable(${table.id})">Edit</button>
-                        <button class="btn-small btn-danger" onclick="deleteTable(${table.id})">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            modal.classList.remove('hidden');
-        }
-
-        function hideEditTablesModal() {
-            document.getElementById('edit-tables-modal').classList.add('hidden');
-        }
-
-        async function addNewTable() {
-            const tableNumber = prompt('Enter table number:');
-            if (!tableNumber) return;
-
-            const capacity = parseInt(prompt('Enter table capacity:', '4')) || 4;
-            const notes = prompt('Enter notes (optional):', '');
-
-            const table = {
-                id: Date.now(), // Use timestamp as ID
-                number: parseInt(tableNumber),
-                name: `Table ${tableNumber}`,
-                capacity: capacity,
-                status: 'vacant',
-                orders: [],
-                notes: notes,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
-            await syncToFirebase('tables', table);
-            alert('Table added successfully!');
-            hideEditTablesModal();
-        }
-
-        async function editTable(tableId) {
-            const table = state.tables.find(t => t.id === tableId);
-            if (!table) return;
-
-            const newNumber = prompt('Edit table number:', table.number);
-            if (newNumber === null) return;
-
-            const newCapacity = parseInt(prompt('Edit capacity:', table.capacity || 4));
-            if (isNaN(newCapacity)) return;
-
-            const newStatus = prompt('Edit status (vacant/occupied/reserved):', table.status);
-            if (!['vacant', 'occupied', 'reserved'].includes(newStatus)) {
-                alert('Invalid status');
-                return;
-            }
-
-            const newNotes = prompt('Edit notes:', table.notes || '');
-
-            table.number = parseInt(newNumber);
-            table.name = `Table ${newNumber}`;
-            table.capacity = newCapacity;
-            table.status = newStatus;
-            table.notes = newNotes;
-            table.updatedAt = new Date().toISOString();
-
-            await syncToFirebase('tables', table);
-            alert('Table updated!');
-            hideEditTablesModal();
-        }
-
-        async function deleteTable(tableId) {
-            if (!confirm('Delete this table? This cannot be undone.')) return;
-
-            await db.collection('tables').doc(tableId.toString()).delete();
-            alert('Table deleted!');
-            hideEditTablesModal();
-        }
-
-        function saveTablesChanges() {
-            hideEditTablesModal();
-        }
-
-        // Reports Functions (same as before, but integrated)
+        // Reports Functions
         function generateReports() {
             const startDate = document.getElementById('report-start-date').value 
                 ? new Date(document.getElementById('report-start-date').value)
-                : state.reports.startDate;
+                : new Date();
                 
             const endDate = document.getElementById('report-end-date').value
                 ? new Date(document.getElementById('report-end-date').value)
-                : state.reports.endDate;
+                : new Date();
 
             // Filter data by date range
             const filteredTransactions = state.completedTransactions.filter(t => {
-                const transDate = new Date(t.date || t.createdAt);
+                const transDate = new Date(t.date);
                 return transDate >= startDate && transDate <= endDate;
             });
 
             const filteredExpenses = state.expenses.filter(e => {
-                const expDate = new Date(e.date || e.createdAt);
+                const expDate = new Date(e.date);
                 return expDate >= startDate && expDate <= endDate;
             });
 
@@ -2254,329 +1795,8 @@
                     </div>
                 `).join('') || '<p style="color: #6b7280; text-align: center;">No sales data</p>';
             }
-
-            // Generate charts
-            generateExpensesChart(filteredExpenses);
-            generateHourlyChart(filteredTransactions);
         }
 
-        function generateExpensesChart(expenses) {
-            const ctx = document.getElementById('expensesChart');
-            if (!ctx) return;
-
-            // Destroy existing chart if it exists
-            if (ctx.chart) {
-                ctx.chart.destroy();
-            }
-
-            const categories = [...new Set(expenses.map(e => e.category))];
-            const data = categories.map(cat => 
-                expenses.filter(e => e.category === cat).reduce((sum, e) => sum + e.amount, 0)
-            );
-
-            ctx.chart = new Chart(ctx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: categories,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: [
-                            '#ea580c', '#3b82f6', '#16a34a', '#f59e0b',
-                            '#8b5cf6', '#ef4444', '#10b981'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-
-        function generateHourlyChart(transactions) {
-            const ctx = document.getElementById('hourlyChart');
-            if (!ctx) return;
-
-            // Destroy existing chart if it exists
-            if (ctx.chart) {
-                ctx.chart.destroy();
-            }
-
-            const hours = Array.from({length: 24}, (_, i) => i);
-            const salesByHour = hours.map(hour => 
-                transactions.filter(t => {
-                    const time = new Date(t.timestamp || t.createdAt);
-                    return time.getHours() === hour;
-                }).reduce((sum, t) => sum + t.total, 0)
-            );
-
-            ctx.chart = new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: hours.map(h => `${h}:00`),
-                    datasets: [{
-                        label: 'Sales (Rs.)',
-                        data: salesByHour,
-                        borderColor: '#ea580c',
-                        backgroundColor: 'rgba(234, 88, 12, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // Export Functions
-        function exportSalesReport() {
-            const startDate = document.getElementById('report-start-date').value;
-            const endDate = document.getElementById('report-end-date').value;
-            
-            let csv = 'SALES REPORT\n';
-            csv += `Period: ${startDate} to ${endDate}\n\n`;
-            csv += 'Date,Time,Table,Items,Total,Payment Method,Cash Amount,QR Amount\n';
-            
-            state.completedTransactions.forEach(t => {
-                const transDate = new Date(t.date || t.createdAt);
-                if (transDate >= new Date(startDate) && transDate <= new Date(endDate)) {
-                    const items = t.items.map(i => `${i.name} x${i.quantity}`).join('; ');
-                    csv += `${t.date || transDate.toLocaleDateString()},${t.timestamp || transDate.toLocaleTimeString()},${t.tableNumber},"${items}",${t.total},${t.paymentMethod},${t.cashAmount || 0},${t.qrAmount || 0}\n`;
-                }
-            });
-
-            downloadCSV(csv, `sales-report-${startDate}-to-${endDate}.csv`);
-        }
-
-        function exportExpensesReport() {
-            const startDate = document.getElementById('report-start-date').value;
-            const endDate = document.getElementById('report-end-date').value;
-            
-            let csv = 'EXPENSES REPORT\n';
-            csv += `Period: ${startDate} to ${endDate}\n\n`;
-            csv += 'Date,Time,Description,Amount,Category\n';
-            
-            state.expenses.forEach(e => {
-                const expDate = new Date(e.date || e.createdAt);
-                if (expDate >= new Date(startDate) && expDate <= new Date(endDate)) {
-                    csv += `${e.date || expDate.toLocaleDateString()},${e.timestamp || expDate.toLocaleTimeString()},"${e.description}",${e.amount},${e.category}\n`;
-                }
-            });
-
-            downloadCSV(csv, `expenses-report-${startDate}-to-${endDate}.csv`);
-        }
-
-        function exportInventoryReport() {
-            // Get all items sold
-            const itemSales = {};
-            state.completedTransactions.forEach(trans => {
-                trans.items.forEach(item => {
-                    if (!itemSales[item.name]) {
-                        itemSales[item.name] = { 
-                            quantity: 0, 
-                            revenue: 0,
-                            price: item.price 
-                        };
-                    }
-                    itemSales[item.name].quantity += item.quantity;
-                    itemSales[item.name].revenue += item.price * item.quantity;
-                });
-            });
-
-            let csv = 'INVENTORY REPORT\n';
-            csv += `Generated: ${new Date().toLocaleDateString()}\n\n`;
-            csv += 'Item,Quantity Sold,Unit Price,Total Revenue\n';
-            
-            Object.entries(itemSales).forEach(([name, data]) => {
-                csv += `${name},${data.quantity},${data.price},${data.revenue.toFixed(2)}\n`;
-            });
-
-            downloadCSV(csv, `inventory-report-${new Date().toISOString().split('T')[0]}.csv`);
-        }
-
-        function exportMenuReport() {
-            let csv = 'MENU REPORT\n';
-            csv += `Generated: ${new Date().toLocaleDateString()}\n\n`;
-            csv += 'Category,Item Name,Price,Description\n';
-            
-            // Group by category
-            const itemsByCategory = {};
-            state.menuItems.forEach(item => {
-                if (!itemsByCategory[item.category]) {
-                    itemsByCategory[item.category] = [];
-                }
-                itemsByCategory[item.category].push(item);
-            });
-
-            Object.entries(itemsByCategory).forEach(([category, items]) => {
-                items.forEach(item => {
-                    csv += `${category},"${item.name}",${item.price},"${item.description || ''}"\n`;
-                });
-            });
-
-            downloadCSV(csv, `menu-report-${new Date().toISOString().split('T')[0]}.csv`);
-        }
-
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // Modal Functions
-        function showAddExpenseModal() {
-            document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
-            document.getElementById('add-expense-modal').classList.remove('hidden');
-        }
-
-        function hideAddExpenseModal() {
-            document.getElementById('add-expense-modal').classList.add('hidden');
-            document.getElementById('expense-description').value = '';
-            document.getElementById('expense-amount').value = '';
-        }
-
-        async function saveExpense() {
-            const description = document.getElementById('expense-description').value;
-            const amount = parseFloat(document.getElementById('expense-amount').value);
-            const category = document.getElementById('expense-category').value;
-            const date = document.getElementById('expense-date').value;
-
-            if (!description || !amount || amount <= 0) {
-                alert('Please enter valid expense details');
-                return;
-            }
-
-            const expense = {
-                id: Date.now(),
-                description,
-                amount,
-                category,
-                date: date || new Date().toISOString().split('T')[0],
-                timestamp: new Date().toLocaleTimeString(),
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
-            await syncToFirebase('expenses', expense);
-            hideAddExpenseModal();
-            alert('Expense added successfully!');
-        }
-
-        function showSettings() {
-            document.getElementById('settings-restaurant-name').value = state.restaurantName;
-            document.getElementById('settings-table-count').value = state.tableCount;
-            document.getElementById('settings-modal').classList.remove('hidden');
-        }
-
-        function hideSettingsModal() {
-            document.getElementById('settings-modal').classList.add('hidden');
-        }
-
-        async function updateRestaurantSettings() {
-            const restaurantName = document.getElementById('settings-restaurant-name').value;
-            const tableCount = parseInt(document.getElementById('settings-table-count').value);
-
-            state.restaurantName = restaurantName;
-            
-            if (tableCount !== state.tableCount) {
-                // Update table count
-                state.tableCount = tableCount;
-                
-                // Get current tables
-                const currentTables = state.tables.sort((a, b) => a.number - b.number);
-                
-                // Add or remove tables as needed
-                if (tableCount > currentTables.length) {
-                    // Add new tables
-                    for (let i = currentTables.length + 1; i <= tableCount; i++) {
-                        const table = {
-                            id: Date.now() + i,
-                            number: i,
-                            name: `Table ${i}`,
-                            capacity: 4,
-                            status: 'vacant',
-                            orders: [],
-                            notes: '',
-                            createdAt: new Date().toISOString(),
-                            updatedAt: new Date().toISOString()
-                        };
-                        await syncToFirebase('tables', table);
-                    }
-                } else if (tableCount < currentTables.length) {
-                    // Remove extra tables (keep highest numbers)
-                    const tablesToRemove = currentTables.slice(tableCount);
-                    for (const table of tablesToRemove) {
-                        await db.collection('tables').doc(table.id.toString()).delete();
-                    }
-                }
-            }
-
-            hideSettingsModal();
-            alert('Settings updated successfully!');
-        }
-
-        async function resetAllData() {
-            if (!confirm('⚠️ This will delete ALL data including Firebase. Are you sure?')) {
-                return;
-            }
-
-            if (confirm('⚠️ This action cannot be undone. All orders, transactions, and settings will be lost.')) {
-                // Delete all collections
-                const collections = ['tables', 'menuItems', 'kitchenOrders', 'transactions', 'expenses'];
-                
-                for (const collection of collections) {
-                    const snapshot = await db.collection(collection).get();
-                    const batch = db.batch();
-                    snapshot.docs.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
-                    await batch.commit();
-                }
-
-                // Reload page to reset state
-                location.reload();
-            }
-        }
-
-        // Tab Switching
-        function switchTab(tab) {
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.nav-btn').classList.add('active');
-
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tab + '-tab').classList.add('active');
-
-            // Refresh relevant data when switching tabs
-            if (tab === 'waiter') {
-                renderTables();
-            } else if (tab === 'kitchen') {
-                renderKitchen();
-            } else if (tab === 'checkout') {
-                renderCheckout();
-            } else if (tab === 'reports') {
-                generateReports();
-            }
-        }
-
-        // Date Range Functions
         function setDateRange(range) {
             const today = new Date();
             let startDate, endDate = today;
@@ -2599,35 +1819,170 @@
             generateReports();
         }
 
-        // Network status monitoring
-        window.addEventListener('online', () => {
-            isOnline = true;
-            updateSyncBadge('Online', true);
-        });
-
-        window.addEventListener('offline', () => {
-            isOnline = false;
-            updateSyncBadge('Offline', false);
-        });
-
-        // Start the app
-        window.addEventListener('load', async () => {
-            // Check if Firebase is configured
-            try {
-                await initializeFirebase();
-                
-                // Check if we have any tables in Firebase
-                const tablesSnapshot = await db.collection('tables').get();
-                if (tablesSnapshot.empty) {
-                    // Show setup wizard if no tables exist
-                    document.getElementById('setup-wizard').classList.remove('hidden');
-                } else {
-                    // Load existing data
-                    await initializeApp();
+        function exportSalesReport() {
+            const startDate = document.getElementById('report-start-date').value;
+            const endDate = document.getElementById('report-end-date').value;
+            
+            let csv = 'SALES REPORT\n';
+            csv += `Period: ${startDate} to ${endDate}\n\n`;
+            csv += 'Date,Time,Table,Items,Total,Payment Method,Cash Amount,QR Amount\n';
+            
+            state.completedTransactions.forEach(t => {
+                const transDate = new Date(t.date);
+                if (transDate >= new Date(startDate) && transDate <= new Date(endDate)) {
+                    const items = t.items.map(i => `${i.name}x${i.quantity}`).join('; ');
+                    csv += `${t.date},${t.timestamp},${t.tableNumber},"${items}",${t.total},${t.paymentMethod},${t.cashAmount || 0},${t.qrAmount || 0}\n`;
                 }
-            } catch (error) {
-                console.error('Failed to initialize:', error);
-                alert('Failed to connect to Firebase. Please check your connection.');
+            });
+
+            downloadCSV(csv, `sales-report-${startDate}-to-${endDate}.csv`);
+        }
+
+        function exportExpensesReport() {
+            const startDate = document.getElementById('report-start-date').value;
+            const endDate = document.getElementById('report-end-date').value;
+            
+            let csv = 'EXPENSES REPORT\n';
+            csv += `Period: ${startDate} to ${endDate}\n\n`;
+            csv += 'Date,Time,Description,Amount,Category\n';
+            
+            state.expenses.forEach(e => {
+                const expDate = new Date(e.date);
+                if (expDate >= new Date(startDate) && expDate <= new Date(endDate)) {
+                    csv += `${e.date},${e.timestamp},"${e.description}",${e.amount},${e.category}\n`;
+                }
+            });
+
+            downloadCSV(csv, `expenses-report-${startDate}-to-${endDate}.csv`);
+        }
+
+        function exportMenuReport() {
+            let csv = 'MENU REPORT\n';
+            csv += `Generated: ${new Date().toLocaleDateString()}\n\n`;
+            csv += 'Category,Item Name,Price\n';
+            
+            // Group by category
+            const itemsByCategory = {};
+            state.menuItems.forEach(item => {
+                if (!itemsByCategory[item.category]) {
+                    itemsByCategory[item.category] = [];
+                }
+                itemsByCategory[item.category].push(item);
+            });
+
+            Object.entries(itemsByCategory).forEach(([category, items]) => {
+                items.forEach(item => {
+                    csv += `${category},"${item.name}",${item.price}\n`;
+                });
+            });
+
+            downloadCSV(csv, `menu-report-${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Settings Functions
+        function showSettings() {
+            document.getElementById('settings-restaurant-name').value = state.restaurantName;
+            document.getElementById('settings-table-count').value = state.tableCount;
+            document.getElementById('firebase-status').textContent = syncEnabled ? 'Connected' : 'Local Only';
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function hideSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        async function updateSettings() {
+            const restaurantName = document.getElementById('settings-restaurant-name').value;
+            const tableCount = parseInt(document.getElementById('settings-table-count').value);
+
+            state.restaurantName = restaurantName;
+            
+            if (tableCount !== state.tableCount) {
+                state.tableCount = tableCount;
+                
+                // Update tables
+                if (tableCount > state.tables.length) {
+                    // Add new tables
+                    for (let i = state.tables.length + 1; i <= tableCount; i++) {
+                        state.tables.push({
+                            id: i,
+                            number: i,
+                            status: 'vacant',
+                            orders: []
+                        });
+                    }
+                } else if (tableCount < state.tables.length) {
+                    // Remove extra tables
+                    state.tables = state.tables.slice(0, tableCount);
+                }
+                
+                await saveData('tables', state.tables);
+            }
+
+            await saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
+            hideSettingsModal();
+            renderTables();
+            alert('Settings updated!');
+        }
+
+        function resetData() {
+            if (confirm('⚠️ Reset all data? This cannot be undone.')) {
+                localStorage.clear();
+                if (syncEnabled && db) {
+                    // Note: In production, you'd want to properly clear Firebase
+                    alert('Firebase data will need to be cleared from the console.');
+                }
+                location.reload();
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.nav-btn').classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+
+            // Refresh data when switching tabs
+            if (tab === 'waiter') {
+                renderTables();
+            } else if (tab === 'kitchen') {
+                renderKitchen();
+            } else if (tab === 'checkout') {
+                renderCheckout();
+            } else if (tab === 'expenses') {
+                renderExpenses();
+            } else if (tab === 'reports') {
+                generateReports();
+            }
+        }
+
+        // Start on load
+        window.addEventListener('load', () => {
+            // Set default date values
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('report-start-date').value = today;
+            document.getElementById('report-end-date').value = today;
+            
+            // Check if we have existing data
+            const hasData = localStorage.getItem('tables') || localStorage.getItem('menuItems');
+            if (hasData) {
+                // Skip setup if we have data
+                document.getElementById('setup-wizard').classList.add('hidden');
+                startApp();
             }
         });
     </script>
