@@ -4,9 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant POS System</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDK v9 (Modular) -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYtZVzqu1J1nYFf-bGYRmDMjaisB8NfmM",
+            authDomain: "cafeapp-6c468.firebaseapp.com",
+            projectId: "cafeapp-6c468",
+            storageBucket: "cafeapp-6c468.firebasestorage.app",
+            messagingSenderId: "390607952424",
+            appId: "1:390607952424:web:26760c408636676920f31d",
+            measurementId: "G-P2ZK2EYNJK"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const analytics = getAnalytics(app);
+
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+        window.firebaseAuth = auth;
+        window.firebaseModules = {
+            collection, doc, setDoc, getDoc, onSnapshot, query, orderBy, serverTimestamp, signInAnonymously
+        };
+
+        console.log('Firebase initialized successfully');
+    </script>
     <style>
         * {
             margin: 0;
@@ -108,6 +140,10 @@
             cursor: pointer;
             margin-top: 0.5rem;
             width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
         }
 
         /* Loading Screen */
@@ -701,8 +737,6 @@
             </div>
 
             <button class="btn-primary" onclick="completeSetup()">Start POS System</button>
-            
-            <button class="btn-secondary" onclick="useWithoutSetup()">Use Without Setup (Demo)</button>
         </div>
     </div>
 
@@ -710,7 +744,7 @@
     <div id="loading-screen" class="loading-screen hidden">
         <div>
             <div class="spinner"></div>
-            <p style="text-align: center; font-weight: 600;">Loading...</p>
+            <p style="text-align: center; font-weight: 600;">Initializing POS System...</p>
         </div>
     </div>
 
@@ -987,22 +1021,6 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDYtZVzqu1J1nYFf-bGYRmDMjaisB8NfmM",
-            authDomain: "cafeapp-6c468.firebaseapp.com",
-            projectId: "cafeapp-6c468",
-            storageBucket: "cafeapp-6c468.firebasestorage.app",
-            messagingSenderId: "390607952424",
-            appId: "1:390607952424:web:26760c408636676920f31d",
-            measurementId: "G-P2ZK2EYNJK"
-        };
-
-        // Initialize Firebase (simple approach)
-        let firebaseApp;
-        let db;
-        let syncEnabled = false;
-
         // State
         let state = {
             restaurantName: 'My Restaurant',
@@ -1018,55 +1036,116 @@
             selectedCheckoutTable: null
         };
 
-        // Initialize Firebase with error handling
+        // Firebase variables
+        let db = null;
+        let auth = null;
+        let syncEnabled = false;
+        let firebaseInitialized = false;
+
+        // Initialize Firebase
         async function initializeFirebase() {
             try {
-                firebaseApp = firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore();
+                // Check if Firebase modules are available
+                if (!window.firebaseDb || !window.firebaseModules) {
+                    console.log('Firebase modules not loaded yet');
+                    return false;
+                }
+
+                db = window.firebaseDb;
+                auth = window.firebaseAuth;
+                
+                // Sign in anonymously
+                try {
+                    await window.firebaseModules.signInAnonymously(auth);
+                    console.log('Signed in anonymously');
+                } catch (authError) {
+                    console.log('Anonymous sign-in not required');
+                }
+                
                 syncEnabled = true;
+                firebaseInitialized = true;
                 console.log('Firebase initialized successfully');
                 return true;
             } catch (error) {
-                console.log('Firebase init error, using local storage:', error.message);
+                console.log('Firebase initialization error:', error);
                 syncEnabled = false;
                 return false;
             }
         }
 
         // Save data to Firebase or localStorage
-        async function saveData(key, data) {
-            if (syncEnabled && db) {
+        async function saveData(collectionName, data) {
+            if (syncEnabled && db && firebaseInitialized) {
                 try {
-                    await db.collection(key).doc('data').set({
-                        data: data,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    console.log(`Saved to Firebase: ${key}`);
+                    // Convert data to Firestore format
+                    const firestoreData = {
+                        ...data,
+                        updatedAt: window.firebaseModules.serverTimestamp()
+                    };
+                    
+                    const docRef = window.firebaseModules.doc(db, collectionName, data.id ? data.id.toString() : 'main');
+                    await window.firebaseModules.setDoc(docRef, firestoreData, { merge: true });
+                    console.log(`Saved to Firebase: ${collectionName}`);
+                    return true;
                 } catch (error) {
-                    console.log('Firebase save failed, using localStorage:', error);
-                    localStorage.setItem(key, JSON.stringify(data));
+                    console.log('Firebase save failed:', error);
+                    // Fallback to localStorage
+                    localStorage.setItem(collectionName, JSON.stringify(data));
+                    return false;
                 }
             } else {
-                localStorage.setItem(key, JSON.stringify(data));
+                localStorage.setItem(collectionName, JSON.stringify(data));
+                return true;
             }
         }
 
         // Load data from Firebase or localStorage
-        async function loadData(key, defaultValue = []) {
-            if (syncEnabled && db) {
+        async function loadData(collectionName, defaultValue = []) {
+            if (syncEnabled && db && firebaseInitialized) {
                 try {
-                    const doc = await db.collection(key).doc('data').get();
-                    if (doc.exists) {
-                        console.log(`Loaded from Firebase: ${key}`);
-                        return doc.data().data || defaultValue;
+                    const docRef = window.firebaseModules.doc(db, collectionName, 'main');
+                    const docSnap = await window.firebaseModules.getDoc(docRef);
+                    
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        console.log(`Loaded from Firebase: ${collectionName}`);
+                        // Remove Firestore metadata
+                        const { updatedAt, ...cleanData } = data;
+                        return cleanData;
                     }
                 } catch (error) {
-                    console.log('Firebase load failed, using localStorage:', error);
+                    console.log('Firebase load failed:', error);
                 }
             }
             
-            const data = localStorage.getItem(key);
+            // Fallback to localStorage
+            const data = localStorage.getItem(collectionName);
             return data ? JSON.parse(data) : defaultValue;
+        }
+
+        // Setup real-time listener for a collection
+        function setupRealtimeListener(collectionName, callback) {
+            if (syncEnabled && db && firebaseInitialized) {
+                try {
+                    const q = window.firebaseModules.query(
+                        window.firebaseModules.collection(db, collectionName),
+                        window.firebaseModules.orderBy('updatedAt', 'desc')
+                    );
+                    
+                    return window.firebaseModules.onSnapshot(q, (snapshot) => {
+                        const data = [];
+                        snapshot.forEach((doc) => {
+                            const docData = doc.data();
+                            const { updatedAt, ...cleanData } = docData;
+                            data.push(cleanData);
+                        });
+                        callback(data);
+                    });
+                } catch (error) {
+                    console.log(`Realtime listener error for ${collectionName}:`, error);
+                }
+            }
+            return null;
         }
 
         // Setup Wizard
@@ -1078,7 +1157,17 @@
             state.tableCount = tableCount;
 
             // Initialize Firebase
-            await initializeFirebase();
+            document.getElementById('loading-screen').classList.remove('hidden');
+            const firebaseSuccess = await initializeFirebase();
+            
+            if (firebaseSuccess) {
+                document.getElementById('sync-badge').textContent = '☁️ Online';
+                console.log('Firebase connected successfully');
+            } else {
+                document.getElementById('sync-badge').textContent = '📱 Local';
+                document.getElementById('sync-badge').classList.add('offline');
+                console.log('Using local storage');
+            }
 
             // Create tables
             state.tables = [];
@@ -1107,48 +1196,14 @@
 
             // Save initial data
             await saveData('config', { restaurantName, tableCount });
-            await saveData('tables', state.tables);
-            await saveData('menuItems', state.menuItems);
-            await saveData('kitchenOrders', []);
-            await saveData('completedTransactions', []);
-            await saveData('expenses', []);
+            await saveData('tables', { id: 'main', tables: state.tables });
+            await saveData('menuItems', { id: 'main', items: state.menuItems });
+            await saveData('kitchenOrders', { id: 'main', orders: [] });
+            await saveData('transactions', { id: 'main', transactions: [] });
+            await saveData('expenses', { id: 'main', expenses: [] });
 
             document.getElementById('setup-wizard').classList.add('hidden');
-            startApp();
-        }
-
-        function useWithoutSetup() {
-            // Use default values without Firebase
-            syncEnabled = false;
-            state.restaurantName = 'Demo Restaurant';
-            state.tableCount = 10;
-            
-            // Create tables
-            state.tables = [];
-            for (let i = 1; i <= state.tableCount; i++) {
-                state.tables.push({
-                    id: i,
-                    number: i,
-                    status: 'vacant',
-                    orders: []
-                });
-            }
-
-            // Default menu items
-            state.menuItems = [
-                { id: 1, name: 'Momo', price: 150, category: 'Main' },
-                { id: 2, name: 'Chowmein', price: 120, category: 'Main' },
-                { id: 3, name: 'Fried Rice', price: 180, category: 'Main' },
-                { id: 4, name: 'Chicken Chilly', price: 250, category: 'Main' },
-                { id: 5, name: 'Veg Salad', price: 100, category: 'Starter' },
-                { id: 6, name: 'French Fries', price: 80, category: 'Side' },
-                { id: 7, name: 'Coke', price: 60, category: 'Drink' },
-                { id: 8, name: 'Water', price: 20, category: 'Drink' },
-                { id: 9, name: 'Ice Cream', price: 120, category: 'Dessert' },
-                { id: 10, name: 'Kheer', price: 100, category: 'Dessert' }
-            ];
-
-            document.getElementById('setup-wizard').classList.add('hidden');
+            document.getElementById('loading-screen').classList.add('hidden');
             startApp();
         }
 
@@ -1158,31 +1213,82 @@
             
             // Try to load existing data
             try {
-                const config = await loadData('config');
-                if (config) {
-                    state.restaurantName = config.restaurantName || state.restaurantName;
-                    state.tableCount = config.tableCount || state.tableCount;
+                // Load config
+                const config = await loadData('config', {});
+                if (config.restaurantName) {
+                    state.restaurantName = config.restaurantName;
+                    state.tableCount = config.tableCount || 10;
                 }
 
-                const tables = await loadData('tables');
-                if (tables && tables.length > 0) {
-                    state.tables = tables;
+                // Load tables
+                const tablesData = await loadData('tables', {});
+                if (tablesData.tables && tablesData.tables.length > 0) {
+                    state.tables = tablesData.tables;
                 }
 
-                const menuItems = await loadData('menuItems');
-                if (menuItems && menuItems.length > 0) {
-                    state.menuItems = menuItems;
+                // Load menu items
+                const menuData = await loadData('menuItems', {});
+                if (menuData.items && menuData.items.length > 0) {
+                    state.menuItems = menuData.items;
                 }
 
-                state.kitchenOrders = await loadData('kitchenOrders', []);
-                state.completedTransactions = await loadData('completedTransactions', []);
-                state.expenses = await loadData('expenses', []);
-
-                // Update sync badge
-                document.getElementById('sync-badge').textContent = syncEnabled ? '☁️ Online' : '📱 Local';
-                if (!syncEnabled) {
-                    document.getElementById('sync-badge').classList.add('offline');
+                // Load kitchen orders
+                const kitchenData = await loadData('kitchenOrders', {});
+                if (kitchenData.orders) {
+                    state.kitchenOrders = kitchenData.orders;
                 }
+
+                // Load transactions
+                const transactionsData = await loadData('transactions', {});
+                if (transactionsData.transactions) {
+                    state.completedTransactions = transactionsData.transactions;
+                }
+
+                // Load expenses
+                const expensesData = await loadData('expenses', {});
+                if (expensesData.expenses) {
+                    state.expenses = expensesData.expenses;
+                }
+
+                // Set up real-time listeners if Firebase is connected
+                if (syncEnabled && db) {
+                    setupRealtimeListener('tables', (data) => {
+                        if (data[0] && data[0].tables) {
+                            state.tables = data[0].tables;
+                            renderTables();
+                        }
+                    });
+
+                    setupRealtimeListener('menuItems', (data) => {
+                        if (data[0] && data[0].items) {
+                            state.menuItems = data[0].items;
+                            renderMenu();
+                        }
+                    });
+
+                    setupRealtimeListener('kitchenOrders', (data) => {
+                        if (data[0] && data[0].orders) {
+                            state.kitchenOrders = data[0].orders;
+                            renderKitchen();
+                        }
+                    });
+
+                    setupRealtimeListener('transactions', (data) => {
+                        if (data[0] && data[0].transactions) {
+                            state.completedTransactions = data[0].transactions;
+                            generateReports();
+                        }
+                    });
+
+                    setupRealtimeListener('expenses', (data) => {
+                        if (data[0] && data[0].expenses) {
+                            state.expenses = data[0].expenses;
+                            renderExpenses();
+                            generateReports();
+                        }
+                    });
+                }
+
             } catch (error) {
                 console.log('Error loading data:', error);
             }
@@ -1191,6 +1297,7 @@
             document.getElementById('main-app').style.display = 'block';
 
             render();
+            generateReports();
         }
 
         // Render Functions
@@ -1199,7 +1306,6 @@
             renderKitchen();
             renderCheckout();
             renderExpenses();
-            generateReports();
         }
 
         function renderTables() {
@@ -1329,8 +1435,8 @@
 
             state.kitchenOrders.push(kitchenOrder);
 
-            await saveData('tables', state.tables);
-            await saveData('kitchenOrders', state.kitchenOrders);
+            await saveData('tables', { id: 'main', tables: state.tables });
+            await saveData('kitchenOrders', { id: 'main', orders: state.kitchenOrders });
 
             state.currentOrder = [];
             state.selectedTable = null;
@@ -1381,7 +1487,7 @@
             const order = state.kitchenOrders.find(o => o.id === orderId);
             if (order) {
                 order.status = 'ready';
-                await saveData('kitchenOrders', state.kitchenOrders);
+                await saveData('kitchenOrders', { id: 'main', orders: state.kitchenOrders });
                 renderKitchen();
             }
         }
@@ -1490,9 +1596,9 @@
             // Remove from kitchen orders
             state.kitchenOrders = state.kitchenOrders.filter(o => o.tableNumber !== state.selectedCheckoutTable);
 
-            await saveData('tables', state.tables);
-            await saveData('kitchenOrders', state.kitchenOrders);
-            await saveData('completedTransactions', state.completedTransactions);
+            await saveData('tables', { id: 'main', tables: state.tables });
+            await saveData('kitchenOrders', { id: 'main', orders: state.kitchenOrders });
+            await saveData('transactions', { id: 'main', transactions: state.completedTransactions });
 
             alert('Payment processed successfully!');
             cancelCheckout();
@@ -1535,7 +1641,7 @@
                     }
                     
                     state.tableCount = newCount;
-                    saveData('tables', state.tables);
+                    saveData('tables', { id: 'main', tables: state.tables });
                     saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
                     renderTables();
                     alert(`Updated to ${newCount} tables`);
@@ -1565,7 +1671,7 @@
                     state.tables.sort((a, b) => a.number - b.number);
                     state.tableCount = state.tables.length;
                     
-                    saveData('tables', state.tables);
+                    saveData('tables', { id: 'main', tables: state.tables });
                     saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
                     renderTables();
                     alert(`Added Table ${num}`);
@@ -1606,7 +1712,7 @@
                 category: category
             });
             
-            saveData('menuItems', state.menuItems);
+            saveData('menuItems', { id: 'main', items: state.menuItems });
             alert(`Added ${name} to menu`);
             renderMenu();
         }
@@ -1632,7 +1738,7 @@
                     item.price = parseFloat(newPrice);
                     item.category = newCategory;
                     
-                    saveData('menuItems', state.menuItems);
+                    saveData('menuItems', { id: 'main', items: state.menuItems });
                     alert('Item updated');
                     renderMenu();
                 }
@@ -1649,7 +1755,7 @@
                     const itemName = state.menuItems[index].name;
                     if (confirm(`Delete ${itemName}?`)) {
                         state.menuItems.splice(index, 1);
-                        saveData('menuItems', state.menuItems);
+                        saveData('menuItems', { id: 'main', items: state.menuItems });
                         alert('Item deleted');
                         renderMenu();
                     }
@@ -1690,7 +1796,7 @@
             };
 
             state.expenses.push(expense);
-            await saveData('expenses', state.expenses);
+            await saveData('expenses', { id: 'main', expenses: state.expenses });
             hideAddExpenseModal();
             renderExpenses();
             generateReports();
@@ -1928,7 +2034,7 @@
                     state.tables = state.tables.slice(0, tableCount);
                 }
                 
-                await saveData('tables', state.tables);
+                await saveData('tables', { id: 'main', tables: state.tables });
             }
 
             await saveData('config', { restaurantName: state.restaurantName, tableCount: state.tableCount });
@@ -1977,13 +2083,26 @@
             document.getElementById('report-start-date').value = today;
             document.getElementById('report-end-date').value = today;
             
-            // Check if we have existing data
-            const hasData = localStorage.getItem('tables') || localStorage.getItem('menuItems');
-            if (hasData) {
-                // Skip setup if we have data
-                document.getElementById('setup-wizard').classList.add('hidden');
-                startApp();
-            }
+            // Check if Firebase modules are loaded (wait a bit)
+            setTimeout(async () => {
+                if (window.firebaseDb) {
+                    console.log('Firebase loaded, proceeding with setup...');
+                    // Check if we have existing data
+                    try {
+                        const config = localStorage.getItem('config');
+                        const tables = localStorage.getItem('tables');
+                        if (config || tables) {
+                            // Skip setup if we have data
+                            document.getElementById('setup-wizard').classList.add('hidden');
+                            startApp();
+                        }
+                    } catch (error) {
+                        console.log('No existing data found, showing setup wizard');
+                    }
+                } else {
+                    console.log('Firebase not loaded, showing setup wizard');
+                }
+            }, 1000);
         });
     </script>
 </body>
