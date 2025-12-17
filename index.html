@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant POS System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            color: #111827;
+        }
+
+        /* Setup Wizard */
+        .setup-wizard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .setup-wizard.hidden {
+            display: none;
+        }
+
+        .wizard-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .wizard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ea580c;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .wizard-subtitle {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .setup-step {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .setup-step h3 {
+            color: #111827;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: #ea580c;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .setup-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .setup-option:hover {
+            border-color: #ea580c;
+            background: #ffedd5;
+        }
+
+        .setup-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+
+        textarea.input-field {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background-color: #ea580c;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.125rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #c2410c;
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box code {
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            color: #dc2626;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 4px solid #f3f4f6;
+            border-top-color: #ea580c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background-color: #ea580c;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.25rem;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background-color: #c2410c;
+        }
+
+        .nav-btn.active {
+            background-color: #000;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .sync-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #ea580c;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tables Grid */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-card:hover {
+            border-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .table-card.occupied {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .table-card.selected {
+            background-color: #ffedd5;
+            border-color: #ea580c;
+        }
+
+        .table-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .table-status {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Menu */
+        .menu-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-section {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            background: white;
+        }
+
+        .category-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #ea580c;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ea580c;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #ffedd5;
+            border-color: #ea580c;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            position: fixed;
+            right: 1rem;
+            top: 5rem;
+            width: 320px;
+            background: white;
+            border: 2px solid #ea580c;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            max-height: calc(100vh - 6rem);
+            overflow-y: auto;
+        }
+
+        .order-summary h3 {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ea580c;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 0.5rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #ea580c;
+            background: white;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            color: #ea580c;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .qty-btn:hover {
+            background: #ea580c;
+            color: white;
+        }
+
+        .order-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #111827;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #16a34a;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: #15803d;
+        }
+
+        .btn-cancel {
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        /* Kitchen Orders */
+        .kitchen-orders {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .kitchen-order {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .kitchen-order.pending {
+            border-color: #f59e0b;
+            background-color: #fef3c7;
+        }
+
+        .kitchen-order.ready {
+            border-color: #16a34a;
+            background-color: #dcfce7;
+        }
+
+        .kitchen-order-header {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .kitchen-order-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Checkout */
+        .checkout-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .payment-btn {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .payment-btn.selected {
+            border-color: #ea580c;
+            background-color: #ffedd5;
+        }
+
+        .checkout-table-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .checkout-table-card:hover {
+            border-color: #ea580c;
+            background: #ffedd5;
+        }
+
+        /* Expenses */
+        .expense-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .order-summary {
+                position: static;
+                width: 100%;
+                margin-top: 2rem;
+            }
+
+            .menu-categories {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                width: 100%;
+            }
+
+            .nav-btn span:last-child {
+                display: none;
+            }
+
+            .tables-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .wizard-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Setup Wizard -->
+    <div id="setup-wizard" class="setup-wizard">
+        <div class="wizard-content">
+            <h1 class="wizard-title">🍽️ Restaurant POS Setup</h1>
+            <p class="wizard-subtitle">Let's set up your Google Sheets integration</p>
+
+            <div class="setup-step">
+                <h3><span class="step-number">1</span> Choose Sync Method</h3>
+                <div class="setup-option" onclick="selectSyncMethod('none')">
+                    <input type="radio" name="sync" id="sync-none" checked>
+                    <label for="sync-none">
+                        <strong>No Sync (Offline Only)</strong><br>
+                        <small>Data saved locally in browser</small>
+                    </label>
+                </div>
+                <div class="setup-option" onclick="selectSyncMethod('sheets')">
+                    <input type="radio" name="sync" id="sync-sheets">
+                    <label for="sync-sheets">
+                        <strong>Google Sheets Sync</strong><br>
+                        <small>Automatically sync all data to Google Sheets</small>
+                    </label>
+                </div>
+            </div>
+
+            <div id="sheets-setup" style="display: none;">
+                <div class="setup-step">
+                    <h3><span class="step-number">2</span> Google Sheets Setup</h3>
+                    
+                    <div class="info-box">
+                        <p><strong>How to get your Google Sheets Web App URL:</strong></p>
+                        <p>1. Create a Google Sheet</p>
+                        <p>2. Go to <strong>Extensions → Apps Script</strong></p>
+                        <p>3. Paste the provided script (see below)</p>
+                        <p>4. Click <strong>Deploy → New Deployment</strong></p>
+                        <p>5. Select type: <strong>Web App</strong></p>
+                        <p>6. Set access: <strong>Anyone</strong></p>
+                        <p>7. Copy the <strong>Web App URL</strong></p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sheet-url">Google Sheets Web App URL:</label>
+                        <textarea id="sheet-url" class="input-field" placeholder="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"></textarea>
+                    </div>
+
+                    <details style="margin-top: 1rem;">
+                        <summary style="cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">📋 Copy Apps Script Code</summary>
+                        <textarea readonly class="input-field" style="font-family: monospace; font-size: 0.75rem;">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+  
+  if (data.type === 'transaction') {
+    var salesSheet = sheet.getSheetByName('Sales') || sheet.insertSheet('Sales');
+    if (salesSheet.getLastRow() === 0) {
+      salesSheet.appendRow(['Date', 'Time', 'Table', 'Items', 'Total', 'Payment Method', 'Cash', 'QR']);
+    }
+    var items = data.data.items.map(i => i.name + ' x' + i.quantity).join(', ');
+    salesSheet.appendRow([
+      data.data.date,
+      data.data.timestamp,
+      data.data.tableNumber,
+      items,
+      data.data.total,
+      data.data.paymentMethod,
+      data.data.cashAmount,
+      data.data.qrAmount
+    ]);
+  }
+  
+  if (data.type === 'expense') {
+    var expenseSheet = sheet.getSheetByName('Expenses') || sheet.insertSheet('Expenses');
+    if (expenseSheet.getLastRow() === 0) {
+      expenseSheet.appendRow(['Date', 'Time', 'Description', 'Amount', 'Category']);
+    }
+    expenseSheet.appendRow([
+      data.data.date,
+      data.data.timestamp,
+      data.data.description,
+      data.data.amount,
+      data.data.category
+    ]);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({success: true}));
+}</textarea>
+                    </details>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="completeSetup()">Start Using POS System</button>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen hidden">
+        <div>
+            <div class="spinner"></div>
+            <p style="text-align: center; font-weight: 600;">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" style="display: none;">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-container">
+                <div class="nav-tabs">
+                    <button class="nav-btn active" onclick="switchTab('waiter')">
+                        <span>🛒</span>
+                        <span>Waiter</span>
+                    </button>
+                    <button class="nav-btn" onclick="switchTab('kitchen')">
+                        <span>👨‍🍳</span>
+                        <span>Kitchen</span>
+                    </button>
+                    <button class="nav-btn" onclick="switchTab('checkout')">
+                        <span>💰</span>
+                        <span>Checkout</span>
+                    </button>
+                    <button class="nav-btn" onclick="switchTab('expenses')">
+                        <span>📊</span>
+                        <span>Expenses</span>
+                    </button>
+                </div>
+                <div class="nav-actions">
+                    <span id="sync-badge" class="sync-badge" style="display: none;"></span>
+                    <button class="nav-btn" onclick="downloadReport()">
+                        <span>⬇️</span>
+                        <span>Download</span>
+                    </button>
+                    <button class="nav-btn" onclick="showSettings()">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container -->
+        <div class="container">
+            <!-- Waiter Tab -->
+            <div id="waiter-tab" class="tab-content active">
+                <h2 class="section-title">Select Table</h2>
+                <div id="tables-grid" class="tables-grid"></div>
+                
+                <div id="menu-section" style="display: none;">
+                    <h2 class="section-title">Menu - Table <span id="selected-table-num"></span></h2>
+                    <div id="menu-categories" class="menu-categories"></div>
+                </div>
+
+                <div id="order-summary" class="order-summary" style="display: none;">
+                    <h3>Current Order</h3>
+                    <div id="order-items"></div>
+                    <div class="order-total">Total: Rs.<span id="order-total">0.00</span></div>
+                    <button class="btn-submit" onclick="submitOrder()">Submit to Kitchen</button>
+                    <button class="btn-cancel" onclick="cancelOrder()">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Kitchen Tab -->
+            <div id="kitchen-tab" class="tab-content">
+                <h2 class="section-title">Kitchen Orders</h2>
+                <div id="kitchen-orders" class="kitchen-orders"></div>
+            </div>
+
+            <!-- Checkout Tab -->
+            <div id="checkout-tab" class="tab-content">
+                <h2 class="section-title">Checkout</h2>
+                <div class="checkout-section">
+                    <div id="checkout-tables"></div>
+                    <div id="checkout-details" style="display: none;">
+                        <h3>Table <span id="checkout-table-num"></span></h3>
+                        <div id="checkout-items"></div>
+                        <div class="order-total">Total: Rs.<span id="checkout-total">0.00</span></div>
+                        
+                        <h3 style="margin-top: 1.5rem;">Payment Method</h3>
+                        <div class="payment-methods">
+                            <button class="payment-btn" onclick="selectPayment('Cash')">Cash</button>
+                            <button class="payment-btn" onclick="selectPayment('QR')">QR/Card</button>
+                            <button class="payment-btn" onclick="selectPayment('Both')">Both</button>
+                        </div>
+                        
+                        <div id="split-payment" style="display: none;">
+                            <div class="input-group">
+                                <label>Cash Amount:</label>
+                                <input type="number" id="cash-amount" class="input-field" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <label>QR Amount:</label>
+                                <input type="number" id="qr-amount" class="input-field" step="0.01">
+                            </div>
+                        </div>
+                        
+                        <button class="btn-submit" onclick="processPayment()">Process Payment</button>
+                        <button class="btn-cancel" onclick="cancelCheckout()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expenses Tab -->
+            <div id="expenses-tab" class="tab-content">
+                <h2 class="section-title">Expenses</h2>
+                <button class="btn-primary" style="max-width: 300px;" onclick="addExpense()">+ Add Expense</button>
+                <div style="margin: 2rem 0;">
+                    <h3>Total Expenses: Rs.<span id="total-expenses">0.00</span></h3>
+                </div>
+                <div id="expenses-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let state = {
+            syncEnabled: false,
+            sheetUrl: '',
+            tables: [],
+            menuItems: [],
+            selectedTable: null,
+            currentOrder: [],
+            kitchenOrders: [],
+            completedTransactions: [],
+            expenses: [],
+            paymentMethod: '',
+            selectedCheckoutTable: null
+        };
+
+        // Storage with fallback
+        const storage = {
+            async get(key) {
+                if (window.storage && window.storage.get) {
+                    try {
+                        return await window.storage.get(key);
+                    } catch {}
+                }
+                const value = localStorage.getItem(key);
+                return value ? { key, value } : null;
+            },
+            async set(key, value) {
+                if (window.storage && window.storage.set) {
+                    try {
+                        return await window.storage.set(key, value);
+                    } catch {}
+                }
+                localStorage.setItem(key, value);
+                return { key, value };
+            }
+        };
+
+        async function loadData(key, defaultValue) {
+            const result = await storage.get(key);
+            return result ? JSON.parse(result.value) : defaultValue;
+        }
+
+        async function saveData(key, value) {
+            await storage.set(key, JSON.stringify(value));
+        }
+
+        // Setup Wizard
+        function selectSyncMethod(method) {
+            document.getElementById('sync-none').checked = (method === 'none');
+            document.getElementById('sync-sheets').checked = (method === 'sheets');
+            document.getElementById('sheets-setup').style.display = method === 'sheets' ? 'block' : 'none';
+        }
+
+        async function completeSetup() {
+            const syncEnabled = document.getElementById('sync-sheets').checked;
+            const sheetUrl = document.getElementById('sheet-url').value.trim();
+
+            if (syncEnabled && !sheetUrl) {
+                alert('Please enter your Google Sheets Web App URL');
+                return;
+            }
+
+            state.syncEnabled = syncEnabled;
+            state.sheetUrl = sheetUrl;
+
+            await saveData('config', { syncEnabled, sheetUrl });
+            
+            document.getElementById('setup-wizard').classList.add('hidden');
+            await initializeApp();
+        }
+
+        // Initialize App
+        async function initializeApp() {
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            // Load config
+            const config = await loadData('config', {});
+            state.syncEnabled = config.syncEnabled || false;
+            state.sheetUrl = config.sheetUrl || '';
+
+            // Load data
+            state.tables = await loadData('tables', Array.from({length: 10}, (_, i) => ({
+                number: i + 1,
+                status: 'vacant',
+                orders: []
+            })));
+
+            state.menuItems = await loadData('menuItems', [
+                { id: 1, name: 'Momo', price: 150, category: 'Main' },
+                { id: 2, name: 'Chowmein', price: 120, category: 'Main' },
+                { id: 3, name: 'Fried Rice', price: 180, category: 'Main' },
+                { id: 4, name: 'Chicken Chilly', price: 250, category: 'Main' },
+                { id: 5, name: 'Veg Salad', price: 100, category: 'Starter' },
+                { id: 6, name: 'French Fries', price: 80, category: 'Side' },
+                { id: 7, name: 'Coke', price: 60, category: 'Drink' },
+                { id: 8, name: 'Water', price: 20, category: 'Drink' },
+                { id: 9, name: 'Ice Cream', price: 120, category: 'Dessert' },
+                { id: 10, name: 'Kheer', price: 100, category: 'Dessert' }
+            ]);
+
+            state.kitchenOrders = await loadData('kitchenOrders', []);
+            state.completedTransactions = await loadData('completedTransactions', []);
+            state.expenses = await loadData('expenses', []);
+
+            // Update sync badge
+            if (state.syncEnabled) {
+                document.getElementById('sync-badge').textContent = '☁️ Synced';
+                document.getElementById('sync-badge').style.display = 'block';
+            }
+
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('main-app').style.display = 'block';
+
+            render();
+        }
+
+        // Render Functions
+        function render() {
+            renderTables();
+            renderKitchen();
+            renderCheckout();
+            renderExpenses();
+        }
+
+        function renderTables() {
+            const grid = document.getElementById('tables-grid');
+            grid.innerHTML = state.tables.map(table => `
+                <div class="table-card ${table.status === 'occupied' ? 'occupied' : ''} ${state.selectedTable === table.number ? 'selected' : ''}"
+                     onclick="selectTable(${table.number})">
+                    <div class="table-number">${table.number}</div>
+                    <div class="table-status">${table.status}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectTable(tableNum) {
+            state.selectedTable = tableNum;
+            state.currentOrder = state.tables.find(t => t.number === tableNum).orders || [];
+            
+            document.getElementById('selected-table-num').textContent = tableNum;
+            document.getElementById('menu-section').style.display = 'block';
+            document.getElementById('order-summary').style.display = 'block';
+            
+            renderMenu();
+            renderOrderSummary();
+            renderTables();
+        }
+
+        function renderMenu() {
+            const categories = [...new Set(state.menuItems.map(item => item.category))];
+            const menuContainer = document.getElementById('menu-categories');
+            
+            menuContainer.innerHTML = categories.map(category => `
+                <div class="category-section">
+                    <div class="category-title">${category}</div>
+                    ${state.menuItems.filter(item => item.category === category)
+                        .map(item => `
+                            <div class="menu-item" onclick="addToOrder(${item.id})">
+                                <span>${item.name}</span>
+                                <span>Rs.${item.price}</span>
+                            </div>
+                        `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function addToOrder(itemId) {
+            const menuItem = state.menuItems.find(i => i.id === itemId);
+            const orderItem = state.currentOrder.find(i => i.id === itemId);
+            
+            if (orderItem) {
+                orderItem.quantity++;
+            } else {
+                state.currentOrder.push({
+                    id: menuItem.id,
+                    name: menuItem.name,
+                    price: menuItem.price,
+                    quantity: 1
+                });
+            }
+            
+            renderOrderSummary();
+        }
+
+        function renderOrderSummary() {
+            const itemsContainer = document.getElementById('order-items');
+            const total = state.currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            itemsContainer.innerHTML = state.currentOrder.map(item => `
+                <div class="order-item">
+                    <span>${item.name}</span>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                    </div>
+                    <span>Rs.${item.price * item.quantity}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('order-total').textContent = total.toFixed(2);
+        }
+
+        function updateQuantity(itemId, change) {
+            const item = state.currentOrder.find(i => i.id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    state.currentOrder = state.currentOrder.filter(i => i.id !== itemId);
+                }
+                renderOrderSummary();
+            }
+        }
+
+        async function submitOrder() {
+            if (state.currentOrder.length === 0) {
+                alert('Please add items to the order');
+                return;
+            }
+
+            const table = state.tables.find(t => t.number === state.selectedTable);
+            table.status = 'occupied';
+            table.orders = [...state.currentOrder];
+
+            const kitchenOrder = {
+                id: Date.now(),
+                tableNumber: state.selectedTable,
+                items: [...state.currentOrder],
+                status: 'pending',
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            state.kitchenOrders.push(kitchenOrder);
+
+            await saveData('tables', state.tables);
+            await saveData('kitchenOrders', state.kitchenOrders);
+
+            state.currentOrder = [];
+            state.selectedTable = null;
+            
+            document.getElementById('menu-section').style.display = 'none';
+            document.getElementById('order-summary').style.display = 'none';
+
+            alert('Order submitted to kitchen!');
+            render();
+        }
+
+        function cancelOrder() {
+            state.currentOrder = [];
+            state.selectedTable = null;
+            document.getElementById('menu-section').style.display = 'none';
+            document.getElementById('order-summary').style.display = 'none';
+            renderTables();
+        }
+
+        function renderKitchen() {
+            const container = document.getElementById('kitchen-orders');
+            
+            if (state.kitchenOrders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280;">No pending orders</p>';
+                return;
+            }
+
+            container.innerHTML = state.kitchenOrders.map(order => `
+                <div class="kitchen-order ${order.status}">
+                    <div class="kitchen-order-header">
+                        Table ${order.tableNumber}
+                        <br><small>${order.timestamp}</small>
+                    </div>
+                    ${order.items.map(item => `
+                        <div class="kitchen-order-item">
+                            ${item.name} x${item.quantity}
+                        </div>
+                    `).join('')}
+                    <button class="btn-primary" style="margin-top: 1rem;" onclick="markOrderReady(${order.id})">
+                        ${order.status === 'pending' ? 'Mark Ready' : 'Ready ✓'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function markOrderReady(orderId) {
+            const order = state.kitchenOrders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'ready';
+                await saveData('kitchenOrders', state.kitchenOrders);
+                renderKitchen();
+            }
+        }
+
+        function renderCheckout() {
+            const occupiedTables = state.tables.filter(t => t.status === 'occupied');
+            const container = document.getElementById('checkout-tables');
+
+            if (occupiedTables.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280;">No tables to checkout</p>';
+                return;
+            }
+
+            container.innerHTML = occupiedTables.map(table => {
+                const total = table.orders.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                return `
+                    <div class="checkout-table-card" onclick="selectCheckoutTable(${table.number})">
+                        <h3>Table ${table.number}</h3>
+                        <p>Items: ${table.orders.length}</p>
+                        <p><strong>Total: Rs.${total.toFixed(2)}</strong></p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectCheckoutTable(tableNum) {
+            state.selectedCheckoutTable = tableNum;
+            const table = state.tables.find(t => t.number === tableNum);
+            const total = table.orders.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            document.getElementById('checkout-table-num').textContent = tableNum;
+            document.getElementById('checkout-items').innerHTML = table.orders.map(item => `
+                <div class="order-item">
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>Rs.${item.price * item.quantity}</span>
+                </div>
+            `).join('');
+            document.getElementById('checkout-total').textContent = total.toFixed(2);
+            document.getElementById('checkout-details').style.display = 'block';
+            document.getElementById('checkout-tables').style.display = 'none';
+        }
+
+        function selectPayment(method) {
+            state.paymentMethod = method;
+            
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            document.getElementById('split-payment').style.display = method === 'Both' ? 'block' : 'none';
+        }
+
+        async function processPayment() {
+            if (!state.paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            const table = state.tables.find(t => t.number === state.selectedCheckoutTable);
+            const total = table.orders.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            let cashAmount = 0;
+            let qrAmount = 0;
+
+            if (state.paymentMethod === 'Cash') {
+                cashAmount = total;
+            } else if (state.paymentMethod === 'QR') {
+                qrAmount = total;
+            } else {
+                cashAmount = parseFloat(document.getElementById('cash-amount').value) || 0;
+                qrAmount = parseFloat(document.getElementById('qr-amount').value) || 0;
+
+                if (Math.abs(cashAmount + qrAmount - total) > 0.01) {
+                    alert('Total payment must equal bill amount');
+                    return;
+                }
+            }
+
+            const transaction = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                timestamp: new Date().toLocaleTimeString(),
+                tableNumber: state.selectedCheckoutTable,
+                items: [...table.orders],
+                total: total,
+                paymentMethod: state.paymentMethod,
+                cashAmount: cashAmount,
+                qrAmount: qrAmount
+            };
+
+            state.completedTransactions.push(transaction);
+
+            // Sync to Google Sheets
+            if (state.syncEnabled && state.sheetUrl) {
+                try {
+                    await fetch(state.sheetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'transaction',
+                            data: transaction
+                        })
+                    });
+                } catch (error) {
+                    console.error('Sync error:', error);
+                }
+            }
+
+            // Clear table
+            table.status = 'vacant';
+            table.orders = [];
+
+            // Remove from kitchen orders
+            state.kitchenOrders = state.kitchenOrders.filter(o => o.tableNumber !== state.selectedCheckoutTable);
+
+            await saveData('tables', state.tables);
+            await saveData('kitchenOrders', state.kitchenOrders);
+            await saveData('completedTransactions', state.completedTransactions);
+
+            alert('Payment processed successfully!');
+            cancelCheckout();
+            render();
+        }
+
+        function cancelCheckout() {
+            state.selectedCheckoutTable = null;
+            state.paymentMethod = '';
+            document.getElementById('checkout-details').style.display = 'none';
+            document.getElementById('checkout-tables').style.display = 'block';
+            document.getElementById('cash-amount').value = '';
+            document.getElementById('qr-amount').value = '';
+        }
+
+        function addExpense() {
+            const description = prompt('Expense description:');
+            if (!description) return;
+
+            const amount = parseFloat(prompt('Amount:'));
+            if (!amount || amount <= 0) return;
+
+            const category = prompt('Category (e.g., Food, Utilities, Salary):') || 'Other';
+
+            const expense = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                timestamp: new Date().toLocaleTimeString(),
+                description: description,
+                amount: amount,
+                category: category
+            };
+
+            state.expenses.push(expense);
+
+            // Sync to Google Sheets
+            if (state.syncEnabled && state.sheetUrl) {
+                fetch(state.sheetUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'expense',
+                        data: expense
+                    })
+                }).catch(console.error);
+            }
+
+            saveData('expenses', state.expenses);
+            renderExpenses();
+        }
+
+        function renderExpenses() {
+            const total = state.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            document.getElementById('total-expenses').textContent = total.toFixed(2);
+
+            const container = document.getElementById('expenses-list');
+            if (state.expenses.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6b7280;">No expenses recorded</p>';
+                return;
+            }
+
+            container.innerHTML = state.expenses.slice().reverse().map(expense => `
+                <div class="expense-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <strong>${expense.description}</strong>
+                        <strong style="color: #dc2626;">Rs.${expense.amount.toFixed(2)}</strong>
+                    </div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">
+                        ${expense.category} • ${expense.date} ${expense.timestamp}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.nav-btn').classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        function downloadReport() {
+            const salesTotal = state.completedTransactions.reduce((sum, t) => sum + t.total, 0);
+            const expensesTotal = state.expenses.reduce((sum, e) => sum + e.amount, 0);
+
+            let csv = 'SALES REPORT\n';
+            csv += 'Date,Time,Table,Items,Total,Payment,Cash,QR\n';
+            state.completedTransactions.forEach(t => {
+                const items = t.items.map(i => `${i.name}x${i.quantity}`).join('; ');
+                csv += `${t.date},${t.timestamp},${t.tableNumber},"${items}",${t.total},${t.paymentMethod},${t.cashAmount},${t.qrAmount}\n`;
+            });
+            csv += `\nTotal Sales,,,,,${salesTotal.toFixed(2)}\n\n`;
+
+            csv += 'EXPENSES REPORT\n';
+            csv += 'Date,Time,Description,Amount,Category\n';
+            state.expenses.forEach(e => {
+                csv += `${e.date},${e.timestamp},"${e.description}",${e.amount},${e.category}\n`;
+            });
+            csv += `\nTotal Expenses,,,,${expensesTotal.toFixed(2)}\n\n`;
+            csv += `Net Profit,,,,${(salesTotal - expensesTotal).toFixed(2)}\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `restaurant-report-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        function showSettings() {
+            if (confirm('Reset all data and reconfigure? This cannot be undone.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Start the app
+        window.addEventListener('load', async () => {
+            const config = await loadData('config', null);
+            if (config) {
+                document.getElementById('setup-wizard').classList.add('hidden');
+                await initializeApp();
+            }
+        });
+    </script>
+</body>
+</html>
