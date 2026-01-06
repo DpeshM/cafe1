@@ -2,54 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Restaurant POS</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f8fafc;
             color: #1e293b;
+            touch-action: manipulation;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+        }
+
         .header {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             color: white;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .btn-outline {
@@ -59,6 +71,40 @@
 
         .btn-outline:hover {
             background: rgba(255,255,255,0.1);
+        }
+
+        /* Mobile Bottom Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 1000;
+            padding: 5px 0;
+        }
+
+        .mobile-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .mobile-nav-item.active {
+            color: #3b82f6;
+        }
+
+        .mobile-nav-item .icon {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
         }
 
         /* Main Container */
@@ -72,36 +118,41 @@
             width: 250px;
             background: white;
             border-right: 1px solid #e2e8f0;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
+            transition: transform 0.3s;
         }
 
         .tables-sidebar h3 {
             color: #3b82f6;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
+            font-size: 1.1rem;
         }
 
         .tables-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .table-card {
             background: white;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-align: center;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .table-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .table-card:active {
+            transform: scale(0.98);
         }
 
         .table-card.active {
@@ -120,96 +171,133 @@
         }
 
         .table-number {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #1e293b;
+            line-height: 1;
         }
 
         .table-status {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 4px;
             text-transform: uppercase;
         }
 
         .table-amount {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #64748b;
-            margin-top: 5px;
+            margin-top: 4px;
+            line-height: 1;
         }
 
         /* Menu Area */
         .menu-area {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
         }
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
         }
 
         .menu-item {
             background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 120px;
         }
 
-        .menu-item:hover {
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .menu-item:active {
+            transform: scale(0.98);
         }
 
         .menu-item h4 {
             color: #1e293b;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            line-height: 1.2;
         }
 
         .menu-item-category {
             color: #64748b;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
         }
 
         .menu-item-price {
             color: #10b981;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .menu-item-controls {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .qty-btn {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border: 2px solid #3b82f6;
             background: white;
             border-radius: 6px;
             color: #3b82f6;
             font-weight: bold;
             cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .qty-btn:hover {
+        .qty-btn:active {
             background: #3b82f6;
             color: white;
         }
 
         .qty-display {
-            min-width: 30px;
+            min-width: 28px;
             text-align: center;
             font-weight: bold;
+            font-size: 1rem;
         }
 
         /* Order Panel */
@@ -219,22 +307,26 @@
             border-left: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s;
         }
 
         .order-header {
-            padding: 20px;
+            padding: 15px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
+            position: sticky;
+            top: 0;
         }
 
         .order-header h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .order-body {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .order-item {
@@ -247,56 +339,66 @@
 
         .order-item-name {
             flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.2;
         }
 
         .order-item-qty {
-            margin: 0 10px;
+            margin: 0 8px;
             font-weight: bold;
+            font-size: 0.9rem;
         }
 
         .order-item-price {
             color: #10b981;
             font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 50px;
+            text-align: right;
         }
 
         .order-footer {
-            padding: 20px;
+            padding: 15px;
             border-top: 2px solid #e2e8f0;
+            background: white;
+            position: sticky;
+            bottom: 0;
         }
 
         .order-total {
             text-align: right;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #1e293b;
         }
 
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .action-buttons .btn {
             width: 100%;
             padding: 12px;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
             background: #3b82f6;
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: #2563eb;
+            transform: scale(0.98);
         }
 
         .btn-success {
             background: #10b981;
         }
 
-        .btn-success:hover {
+        .btn-success:active {
             background: #059669;
         }
 
@@ -304,7 +406,7 @@
             background: #64748b;
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:active {
             background: #475569;
         }
 
@@ -312,7 +414,7 @@
             background: #ef4444;
         }
 
-        .btn-danger:hover {
+        .btn-danger:active {
             background: #dc2626;
         }
 
@@ -324,17 +426,18 @@
             right: 0;
             background: #1e293b;
             color: white;
-            padding: 10px 20px;
+            padding: 8px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            z-index: 999;
         }
 
         .sync-status {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .sync-status.online {
@@ -349,14 +452,18 @@
         .notification {
             position: fixed;
             top: 20px;
-            right: 20px;
-            padding: 15px 25px;
+            right: 15px;
+            left: 15px;
+            padding: 12px 20px;
             border-radius: 8px;
             color: white;
             font-weight: 600;
-            z-index: 1000;
+            z-index: 1100;
             animation: slideIn 0.3s ease-out;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         .notification.success {
@@ -372,8 +479,8 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* Modal */
@@ -387,42 +494,45 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 1200;
+            padding: 20px;
         }
 
         .modal {
             background: white;
             border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal h2 {
             color: #3b82f6;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
         }
 
         .payment-methods {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 15px 0;
         }
 
         .payment-method {
-            padding: 20px;
+            padding: 15px;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
-        .payment-method:hover {
-            border-color: #3b82f6;
+        .payment-method:active {
+            transform: scale(0.98);
         }
 
         .payment-method.active {
@@ -430,37 +540,150 @@
             background: #eff6ff;
         }
 
-        /* Responsive */
+        /* Mobile Views */
         @media (max-width: 1024px) {
             .container {
                 flex-direction: column;
+                height: calc(100vh - 60px);
             }
             
             .tables-sidebar {
                 width: 100%;
-                height: 150px;
-                overflow-x: auto;
+                height: auto;
+                max-height: 150px;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                padding: 10px;
             }
             
             .tables-grid {
                 display: flex;
-                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 6px;
+                padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch;
             }
             
             .table-card {
-                min-width: 100px;
+                min-width: 80px;
+                min-height: 60px;
+                padding: 8px;
+            }
+            
+            .table-number {
+                font-size: 1.1rem;
+            }
+            
+            .table-status {
+                font-size: 0.6rem;
             }
             
             .order-panel {
-                width: 100%;
-                height: 300px;
                 position: fixed;
                 bottom: 40px;
                 left: 0;
                 right: 0;
-                border-top: 2px solid #e2e8f0;
+                width: 100%;
+                height: 300px;
+                transform: translateY(100%);
                 border-left: none;
+                border-top: 2px solid #e2e8f0;
+                z-index: 900;
             }
+            
+            .order-panel.active {
+                transform: translateY(0);
+            }
+            
+            .menu-area {
+                margin-bottom: 0;
+                padding-bottom: 80px;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .header {
+                padding: 10px 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .menu-item {
+                min-height: 100px;
+                padding: 10px;
+            }
+            
+            .menu-item h4 {
+                font-size: 0.85rem;
+            }
+            
+            .category-tabs {
+                gap: 6px;
+            }
+            
+            .category-tab {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .notification {
+                left: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Swipe to open order panel */
+        .swipe-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            padding: 8px;
+            background: linear-gradient(to top, rgba(248,250,252,0.9), transparent);
+            z-index: 800;
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .swipe-indicator {
+                display: block;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -470,7 +693,7 @@
         <h1>🍽️ Restaurant POS</h1>
         <div class="header-buttons">
             <a href="kitchen.html" class="btn btn-outline">👨‍🍳 Kitchen</a>
-            <a href="server.html" class="btn btn-outline">🖥️ Server View</a>
+            <button class="btn btn-outline" onclick="toggleOrderPanel()" id="order-toggle">📋 Order</button>
         </div>
     </div>
 
@@ -479,21 +702,34 @@
         <!-- Tables Sidebar -->
         <div class="tables-sidebar">
             <h3>Tables</h3>
-            <div class="tables-grid" id="tables-list"></div>
+            <div class="tables-grid" id="tables-list">
+                <div class="loading">Loading tables...</div>
+            </div>
         </div>
 
         <!-- Menu Area -->
         <div class="menu-area">
-            <h3>Menu Items</h3>
-            <div class="menu-grid" id="menu-grid"></div>
+            <div class="category-tabs" id="category-tabs">
+                <div class="category-tab active" data-category="all">All</div>
+            </div>
+            <div class="menu-grid" id="menu-grid">
+                <div class="loading">Loading menu...</div>
+            </div>
         </div>
 
         <!-- Order Panel -->
-        <div class="order-panel">
+        <div class="order-panel" id="order-panel">
             <div class="order-header">
                 <h3 id="current-table-title">Select a Table</h3>
+                <button class="btn btn-outline" onclick="toggleOrderPanel()" style="margin-top: 8px; padding: 4px 8px; font-size: 0.8rem;">
+                    Close
+                </button>
             </div>
-            <div class="order-body" id="order-items"></div>
+            <div class="order-body" id="order-items">
+                <div style="color: #64748b; text-align: center; padding: 40px 20px;">
+                    No items added
+                </div>
+            </div>
             <div class="order-footer">
                 <div class="order-total">
                     Total: <span id="order-total">$0.00</span>
@@ -507,6 +743,31 @@
         </div>
     </div>
 
+    <!-- Swipe Indicator -->
+    <div class="swipe-indicator">
+        ↑ Swipe up to view order
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" onclick="showSection('tables')">
+            <div class="icon">🪑</div>
+            <div>Tables</div>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="showSection('menu')">
+            <div class="icon">📋</div>
+            <div>Menu</div>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="toggleOrderPanel()">
+            <div class="icon">🛒</div>
+            <div>Order</div>
+        </a>
+        <a href="kitchen.html" class="mobile-nav-item">
+            <div class="icon">👨‍🍳</div>
+            <div>Kitchen</div>
+        </a>
+    </div>
+
     <!-- Status Bar -->
     <div class="status-bar">
         <div id="sync-status" class="sync-status online">🟢 Synced</div>
@@ -518,11 +779,11 @@
         <div class="modal">
             <h2>Checkout - Table <span id="checkout-table-number"></span></h2>
             <div id="checkout-items-list"></div>
-            <div class="order-total" style="margin: 20px 0;">
+            <div class="order-total" style="margin: 15px 0;">
                 Total: <span id="checkout-total">$0.00</span>
             </div>
             
-            <h4>Payment Method</h4>
+            <h4 style="margin-bottom: 10px;">Payment Method</h4>
             <div class="payment-methods">
                 <div class="payment-method" onclick="selectPayment('cash')">
                     <div style="font-size: 1.5rem;">💵</div>
@@ -542,7 +803,7 @@
                 </div>
             </div>
             
-            <div class="action-buttons" style="margin-top: 20px;">
+            <div class="action-buttons" style="margin-top: 15px;">
                 <button class="btn btn-success" onclick="processCheckout()">Complete Payment</button>
                 <button class="btn btn-secondary" onclick="hideModal('checkout-modal')">Cancel</button>
             </div>
@@ -553,195 +814,212 @@
     <div id="notification-container"></div>
 
     <script>
-        // ==================== LOCAL STORAGE SERVER SIMULATION ====================
-        const SERVER_KEY = 'restaurant_pos_server_data';
-        const UPDATE_INTERVAL = 2000; // 2 seconds
-
-        // Server data structure
-        let serverData = {
-            tables: [],
-            menu: [],
-            orders: [],
-            transactions: [],
-            lastUpdate: null,
-            deviceId: generateDeviceId()
+        // ==================== CONFIGURATION ====================
+        const APP_NAME = 'RestaurantPOS';
+        const STORAGE_KEYS = {
+            SERVER: APP_NAME + '_server_data',
+            DEVICE: APPName + '_device_id'
         };
+        
+        const SYNC_INTERVAL = 2000; // 2 seconds
+        let syncInterval;
 
-        // Current device state
-        let currentState = {
-            tables: [],
-            menu: [],
+        // ==================== STATE MANAGEMENT ====================
+        const state = {
+            deviceId: '',
+            serverData: null,
             currentTable: null,
             currentOrder: [],
-            selectedPayment: null
+            selectedPayment: null,
+            lastSync: null
         };
 
         // ==================== INITIALIZATION ====================
-        function init() {
-            loadInitialData();
-            setupEventListeners();
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupTouchEvents();
+        });
+
+        function initializeApp() {
+            // Generate or get device ID
+            state.deviceId = getDeviceId();
+            
+            // Load initial data
+            loadData();
+            
+            // Start sync loop
             startSyncLoop();
-            renderTables();
-            renderMenu();
-            updateOrderPanel();
-            updateStatusBar();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initial render
+            renderAll();
         }
 
-        function generateDeviceId() {
-            let id = localStorage.getItem('device_id');
-            if (!id) {
-                id = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('device_id', id);
+        function getDeviceId() {
+            let deviceId = localStorage.getItem(STORAGE_KEYS.DEVICE);
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem(STORAGE_KEYS.DEVICE, deviceId);
             }
-            return id;
+            return deviceId;
         }
 
-        function loadInitialData() {
-            // Try to load from server
-            const saved = localStorage.getItem(SERVER_KEY);
+        // ==================== DATA MANAGEMENT ====================
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEYS.SERVER);
+            
             if (saved) {
                 try {
-                    serverData = JSON.parse(saved);
+                    const parsed = JSON.parse(saved);
                     
-                    // Check if we need to initialize demo data
-                    if (serverData.tables.length === 0) {
-                        initDemoData();
-                        saveToServer();
+                    // Merge with existing state to preserve current session
+                    if (state.serverData) {
+                        // Preserve current order if we have a selected table
+                        if (state.currentTable && state.currentOrder.length > 0) {
+                            const tableIndex = parsed.tables.findIndex(t => t.id === state.currentTable);
+                            if (tableIndex !== -1) {
+                                parsed.tables[tableIndex].currentOrder = [...state.currentOrder];
+                            }
+                        }
                     }
                     
-                    syncFromServer();
+                    state.serverData = parsed;
+                    state.lastSync = new Date().toISOString();
                     
                 } catch (e) {
-                    console.error('Error loading server data:', e);
-                    initDemoData();
-                    saveToServer();
+                    console.error('Error loading data:', e);
+                    createDemoData();
                 }
             } else {
-                initDemoData();
-                saveToServer();
+                createDemoData();
             }
         }
 
-        function initDemoData() {
-            // Create tables
-            serverData.tables = [];
-            for (let i = 1; i <= 12; i++) {
-                serverData.tables.push({
+        function createDemoData() {
+            state.serverData = {
+                tables: [],
+                menu: [],
+                orders: [],
+                transactions: [],
+                lastUpdate: new Date().toISOString()
+            };
+
+            // Create demo tables (1-8)
+            for (let i = 1; i <= 8; i++) {
+                state.serverData.tables.push({
                     id: `table_${i}`,
                     number: i,
                     name: `Table ${i}`,
-                    capacity: i <= 4 ? 2 : i <= 8 ? 4 : 6,
+                    capacity: i <= 2 ? 2 : i <= 5 ? 4 : 6,
                     status: 'vacant',
                     currentOrder: [],
                     lastUpdate: new Date().toISOString()
                 });
             }
 
-            // Create menu
-            serverData.menu = [
-                { id: 'item_1', name: 'Veg Burger', category: 'Main', price: 8.99, stock: 50 },
-                { id: 'item_2', name: 'Chicken Burger', category: 'Main', price: 10.99, stock: 50 },
-                { id: 'item_3', name: 'French Fries', category: 'Sides', price: 4.99, stock: 50 },
-                { id: 'item_4', name: 'Onion Rings', category: 'Sides', price: 5.99, stock: 50 },
-                { id: 'item_5', name: 'Coca Cola', category: 'Drinks', price: 2.99, stock: 50 },
-                { id: 'item_6', name: 'Sprite', category: 'Drinks', price: 2.99, stock: 50 },
-                { id: 'item_7', name: 'Water', category: 'Drinks', price: 1.99, stock: 50 },
-                { id: 'item_8', name: 'Ice Cream', category: 'Dessert', price: 4.99, stock: 50 },
-                { id: 'item_9', name: 'Cheese Pizza', category: 'Main', price: 12.99, stock: 50 },
-                { id: 'item_10', name: 'Garlic Bread', category: 'Sides', price: 6.99, stock: 50 }
+            // Create demo menu
+            state.serverData.menu = [
+                { id: 'item_1', name: 'Burger', category: 'Main', price: 8.99, stock: 50 },
+                { id: 'item_2', name: 'Pizza', category: 'Main', price: 12.99, stock: 50 },
+                { id: 'item_3', name: 'Fries', category: 'Side', price: 4.99, stock: 50 },
+                { id: 'item_4', name: 'Salad', category: 'Side', price: 6.99, stock: 50 },
+                { id: 'item_5', name: 'Coke', category: 'Drink', price: 1.99, stock: 50 },
+                { id: 'item_6', name: 'Water', category: 'Drink', price: 0.99, stock: 50 },
+                { id: 'item_7', name: 'Ice Cream', category: 'Dessert', price: 4.99, stock: 50 },
+                { id: 'item_8', name: 'Coffee', category: 'Drink', price: 2.49, stock: 50 }
             ];
 
-            serverData.orders = [];
-            serverData.transactions = [];
-            serverData.lastUpdate = new Date().toISOString();
-        }
-
-        // ==================== SERVER SYNC ====================
-        function saveToServer() {
-            serverData.lastUpdate = new Date().toISOString();
-            localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
-            
-            // Trigger storage event for other tabs
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: SERVER_KEY,
-                newValue: JSON.stringify(serverData)
-            }));
-            
-            updateStatusBar();
-        }
-
-        function syncFromServer() {
-            const saved = localStorage.getItem(SERVER_KEY);
-            if (saved) {
-                try {
-                    const newData = JSON.parse(saved);
-                    
-                    // Only update if server data is newer
-                    if (!serverData.lastUpdate || new Date(newData.lastUpdate) > new Date(serverData.lastUpdate)) {
-                        serverData = newData;
-                        
-                        // Update local state
-                        currentState.tables = [...serverData.tables];
-                        currentState.menu = [...serverData.menu];
-                        
-                        // Update UI
-                        renderTables();
-                        renderMenu();
-                        
-                        // If we have a current table, update its data
-                        if (currentState.currentTable) {
-                            const table = currentState.tables.find(t => t.id === currentState.currentTable);
-                            if (table) {
-                                currentState.currentOrder = table.currentOrder || [];
-                                updateOrderPanel();
-                            }
-                        }
-                        
-                        showNotification('Data synced from server', 'info');
-                    }
-                    
-                } catch (e) {
-                    console.error('Error syncing from server:', e);
+            // Set current order from demo table if needed
+            if (state.currentTable) {
+                const table = state.serverData.tables.find(t => t.id === state.currentTable);
+                if (table) {
+                    state.currentOrder = table.currentOrder || [];
                 }
             }
+
+            saveData();
         }
 
+        function saveData() {
+            if (!state.serverData) return;
+            
+            // Update timestamp
+            state.serverData.lastUpdate = new Date().toISOString();
+            
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEYS.SERVER, JSON.stringify(state.serverData));
+            
+            // Trigger sync for other tabs
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: STORAGE_KEYS.SERVER,
+                newValue: JSON.stringify(state.serverData)
+            }));
+            
+            updateSyncStatus();
+        }
+
+        // ==================== SYNC SYSTEM ====================
         function startSyncLoop() {
-            setInterval(() => {
-                syncFromServer();
-            }, UPDATE_INTERVAL);
+            // Clear any existing interval
+            if (syncInterval) clearInterval(syncInterval);
+            
+            // Check for updates every SYNC_INTERVAL
+            syncInterval = setInterval(() => {
+                loadData();
+                renderAll();
+            }, SYNC_INTERVAL);
         }
 
         function setupEventListeners() {
-            // Listen for changes from other tabs
+            // Listen for updates from other tabs
             window.addEventListener('storage', (e) => {
-                if (e.key === SERVER_KEY) {
-                    syncFromServer();
-                    showNotification('Data updated from another device', 'info');
+                if (e.key === STORAGE_KEYS.SERVER) {
+                    const oldData = JSON.stringify(state.serverData);
+                    loadData();
+                    
+                    // Only update UI if data changed
+                    if (oldData !== JSON.stringify(state.serverData)) {
+                        renderAll();
+                        showNotification('Data updated', 'info');
+                    }
                 }
             });
-            
-            // Listen for online/offline status
-            window.addEventListener('online', () => {
-                document.getElementById('sync-status').className = 'sync-status online';
-                document.getElementById('sync-status').textContent = '🟢 Synced';
-            });
-            
-            window.addEventListener('offline', () => {
-                document.getElementById('sync-status').className = 'sync-status offline';
-                document.getElementById('sync-status').textContent = '🔴 Offline';
-            });
+
+            // Online/offline status
+            window.addEventListener('online', updateSyncStatus);
+            window.addEventListener('offline', updateSyncStatus);
+
+            // Prevent pull-to-refresh on mobile
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
         }
 
-        // ==================== UI FUNCTIONS ====================
+        // ==================== RENDER FUNCTIONS ====================
+        function renderAll() {
+            renderTables();
+            renderMenu();
+            renderCategories();
+            updateOrderPanel();
+            updateSyncStatus();
+        }
+
         function renderTables() {
             const container = document.getElementById('tables-list');
-            container.innerHTML = currentState.tables.map(table => {
+            if (!container || !state.serverData) return;
+            
+            const tables = state.serverData.tables || [];
+            
+            container.innerHTML = tables.map(table => {
                 const orderTotal = (table.currentOrder || []).reduce((sum, item) => 
                     sum + (item.price * item.quantity), 0);
                 
                 return `
-                    <div class="table-card ${table.status} ${currentState.currentTable === table.id ? 'active' : ''}" 
+                    <div class="table-card ${table.status} ${state.currentTable === table.id ? 'active' : ''}" 
                          onclick="selectTable('${table.id}')">
                         <div class="table-number">${table.number}</div>
                         <div class="table-status">${table.status}</div>
@@ -752,23 +1030,55 @@
             }).join('');
         }
 
-        function renderMenu() {
+        function renderCategories() {
+            const container = document.getElementById('category-tabs');
+            if (!container || !state.serverData) return;
+            
+            const categories = ['all', ...new Set(state.serverData.menu.map(item => item.category))];
+            
+            container.innerHTML = categories.map(category => `
+                <div class="category-tab ${category === 'all' ? 'active' : ''}" 
+                     onclick="filterMenu('${category}')">
+                    ${category === 'all' ? 'All' : category}
+                </div>
+            `).join('');
+        }
+
+        function renderMenu(filter = 'all') {
             const container = document.getElementById('menu-grid');
-            container.innerHTML = currentState.menu.map(item => {
+            if (!container || !state.serverData) return;
+            
+            let items = state.serverData.menu || [];
+            if (filter !== 'all') {
+                items = items.filter(item => item.category === filter);
+            }
+            
+            container.innerHTML = items.map(item => {
                 const currentQty = getOrderQuantity(item.id);
                 return `
-                    <div class="menu-item">
+                    <div class="menu-item" onclick="quickAdd('${item.id}')">
                         <h4>${item.name}</h4>
                         <div class="menu-item-category">${item.category}</div>
                         <div class="menu-item-price">$${item.price.toFixed(2)}</div>
                         <div class="menu-item-controls">
-                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', -1)">-</button>
+                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', -1, event)">-</button>
                             <div class="qty-display">${currentQty}</div>
-                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', 1)">+</button>
+                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', 1, event)">+</button>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        function filterMenu(category) {
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter menu
+            renderMenu(category);
         }
 
         function updateOrderPanel() {
@@ -777,8 +1087,8 @@
             const tableTitle = document.getElementById('current-table-title');
             const checkoutBtn = document.getElementById('checkout-btn');
 
-            if (currentState.currentTable) {
-                const table = currentState.tables.find(t => t.id === currentState.currentTable);
+            if (state.currentTable && state.serverData) {
+                const table = state.serverData.tables.find(t => t.id === state.currentTable);
                 if (table) {
                     tableTitle.textContent = `Table ${table.number}`;
                     checkoutBtn.style.display = table.status === 'occupied' ? 'block' : 'none';
@@ -788,13 +1098,13 @@
                 checkoutBtn.style.display = 'none';
             }
 
-            if (currentState.currentOrder.length === 0) {
-                itemsContainer.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No items added</div>';
+            if (state.currentOrder.length === 0) {
+                itemsContainer.innerHTML = '<div style="color: #64748b; text-align: center; padding: 40px 20px;">No items added</div>';
                 totalElement.textContent = '$0.00';
                 return;
             }
 
-            itemsContainer.innerHTML = currentState.currentOrder.map(item => `
+            itemsContainer.innerHTML = state.currentOrder.map(item => `
                 <div class="order-item">
                     <div class="order-item-name">${item.name}</div>
                     <div class="order-item-qty">x${item.quantity}</div>
@@ -802,64 +1112,63 @@
                 </div>
             `).join('');
 
-            const total = currentState.currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = state.currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             totalElement.textContent = `$${total.toFixed(2)}`;
-        }
-
-        function updateStatusBar() {
-            const lastUpdateEl = document.getElementById('last-update');
-            if (serverData.lastUpdate) {
-                const date = new Date(serverData.lastUpdate);
-                const now = new Date();
-                const diff = Math.floor((now - date) / 1000);
-                
-                if (diff < 60) {
-                    lastUpdateEl.textContent = 'Last update: Just now';
-                } else if (diff < 3600) {
-                    const mins = Math.floor(diff / 60);
-                    lastUpdateEl.textContent = `Last update: ${mins} min${mins > 1 ? 's' : ''} ago`;
-                } else {
-                    lastUpdateEl.textContent = `Last update: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-                }
-            }
         }
 
         // ==================== ORDER MANAGEMENT ====================
         function selectTable(tableId) {
-            currentState.currentTable = tableId;
-            const table = currentState.tables.find(t => t.id === tableId);
+            if (!state.serverData) return;
             
-            if (table) {
-                currentState.currentOrder = table.currentOrder || [];
-                updateOrderPanel();
-                renderTables();
-                renderMenu();
+            const table = state.serverData.tables.find(t => t.id === tableId);
+            if (!table) return;
+            
+            state.currentTable = tableId;
+            state.currentOrder = table.currentOrder || [];
+            
+            // Open order panel on mobile
+            if (window.innerWidth <= 1024) {
+                toggleOrderPanel();
             }
+            
+            renderTables();
+            updateOrderPanel();
+            renderMenu();
         }
 
-        function getOrderQuantity(itemId) {
-            const item = currentState.currentOrder.find(item => item.id === itemId);
-            return item ? item.quantity : 0;
+        function quickAdd(itemId) {
+            if (!state.currentTable) {
+                showNotification('Please select a table first', 'error');
+                return;
+            }
+            
+            adjustQuantity(itemId, 1);
         }
 
-        function adjustQuantity(itemId, change) {
-            if (!currentState.currentTable) {
+        function adjustQuantity(itemId, change, event = null) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            if (!state.currentTable) {
                 showNotification('Please select a table first', 'error');
                 return;
             }
 
-            const menuItem = currentState.menu.find(item => item.id === itemId);
+            if (!state.serverData) return;
+            
+            const menuItem = state.serverData.menu.find(item => item.id === itemId);
             if (!menuItem) return;
 
-            let orderItem = currentState.currentOrder.find(item => item.id === itemId);
+            let orderItem = state.currentOrder.find(item => item.id === itemId);
 
             if (orderItem) {
                 orderItem.quantity += change;
                 if (orderItem.quantity <= 0) {
-                    currentState.currentOrder = currentState.currentOrder.filter(item => item.id !== itemId);
+                    state.currentOrder = state.currentOrder.filter(item => item.id !== itemId);
                 }
             } else if (change > 0) {
-                currentState.currentOrder.push({
+                state.currentOrder.push({
                     id: itemId,
                     name: menuItem.name,
                     price: menuItem.price,
@@ -867,56 +1176,79 @@
                 });
             }
 
+            // Update table in server data
+            if (state.serverData && state.currentTable) {
+                const tableIndex = state.serverData.tables.findIndex(t => t.id === state.currentTable);
+                if (tableIndex !== -1) {
+                    state.serverData.tables[tableIndex].currentOrder = [...state.currentOrder];
+                }
+            }
+
             updateOrderPanel();
             renderMenu();
         }
 
+        function getOrderQuantity(itemId) {
+            const item = state.currentOrder.find(item => item.id === itemId);
+            return item ? item.quantity : 0;
+        }
+
         function submitOrder() {
-            if (!currentState.currentTable) {
+            if (!state.currentTable || !state.serverData) {
                 showNotification('Please select a table', 'error');
                 return;
             }
 
-            if (currentState.currentOrder.length === 0) {
+            if (state.currentOrder.length === 0) {
                 showNotification('Please add items to order', 'error');
                 return;
             }
 
-            // Update table in server data
-            const tableIndex = serverData.tables.findIndex(t => t.id === currentState.currentTable);
-            if (tableIndex !== -1) {
-                serverData.tables[tableIndex].status = 'occupied';
-                serverData.tables[tableIndex].currentOrder = [...currentState.currentOrder];
-                serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
-                
-                // Create kitchen order
-                const orderId = `order_${Date.now()}`;
-                serverData.orders.push({
-                    id: orderId,
-                    tableId: currentState.currentTable,
-                    tableNumber: serverData.tables[tableIndex].number,
-                    items: [...currentState.currentOrder],
-                    status: 'pending',
-                    createdAt: new Date().toISOString(),
-                    createdBy: serverData.deviceId
-                });
-                
-                saveToServer();
-                
-                // Clear current order
-                currentState.currentOrder = [];
-                updateOrderPanel();
-                renderMenu();
-                renderTables();
-                
-                showNotification('Order submitted to kitchen!', 'success');
+            const tableIndex = state.serverData.tables.findIndex(t => t.id === state.currentTable);
+            if (tableIndex === -1) return;
+
+            // Update table
+            state.serverData.tables[tableIndex].status = 'occupied';
+            state.serverData.tables[tableIndex].currentOrder = [...state.currentOrder];
+            state.serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
+
+            // Create kitchen order
+            const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+            state.serverData.orders.push({
+                id: orderId,
+                tableId: state.currentTable,
+                tableNumber: state.serverData.tables[tableIndex].number,
+                items: [...state.currentOrder],
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+                createdBy: state.deviceId
+            });
+
+            // Save data
+            saveData();
+            
+            // Clear current order
+            state.currentOrder = [];
+            
+            // Update UI
+            renderTables();
+            updateOrderPanel();
+            renderMenu();
+            
+            // Show success message
+            showNotification('Order sent to kitchen!', 'success');
+            
+            // Vibrate on mobile
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
             }
         }
 
+        // ==================== CHECKOUT SYSTEM ====================
         function showCheckoutModal() {
-            if (!currentState.currentTable) return;
+            if (!state.currentTable || !state.serverData) return;
             
-            const table = currentState.tables.find(t => t.id === currentState.currentTable);
+            const table = state.serverData.tables.find(t => t.id === state.currentTable);
             if (!table || table.status !== 'occupied') return;
             
             const items = table.currentOrder || [];
@@ -938,75 +1270,159 @@
         }
 
         function selectPayment(method) {
-            currentState.selectedPayment = method;
+            state.selectedPayment = method;
             document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
             event.target.closest('.payment-method').classList.add('active');
         }
 
         function processCheckout() {
-            if (!currentState.selectedPayment) {
+            if (!state.selectedPayment || !state.currentTable || !state.serverData) {
                 showNotification('Please select payment method', 'error');
                 return;
             }
 
-            const tableIndex = serverData.tables.findIndex(t => t.id === currentState.currentTable);
+            const tableIndex = state.serverData.tables.findIndex(t => t.id === state.currentTable);
             if (tableIndex === -1) return;
             
-            const table = serverData.tables[tableIndex];
+            const table = state.serverData.tables[tableIndex];
             const items = table.currentOrder || [];
             const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
             // Create transaction
-            serverData.transactions.push({
+            state.serverData.transactions.push({
                 id: `txn_${Date.now()}`,
-                tableId: currentState.currentTable,
+                tableId: state.currentTable,
                 tableNumber: table.number,
                 items: items,
                 total: total,
-                paymentMethod: currentState.selectedPayment,
+                paymentMethod: state.selectedPayment,
                 status: 'completed',
                 timestamp: new Date().toISOString(),
-                processedBy: serverData.deviceId
+                processedBy: state.deviceId
             });
             
             // Update table
-            serverData.tables[tableIndex].status = 'vacant';
-            serverData.tables[tableIndex].currentOrder = [];
-            serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
+            state.serverData.tables[tableIndex].status = 'vacant';
+            state.serverData.tables[tableIndex].currentOrder = [];
+            state.serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
             
             // Remove kitchen orders for this table
-            serverData.orders = serverData.orders.filter(order => 
-                order.tableId !== currentState.currentTable || order.status === 'completed'
+            state.serverData.orders = state.serverData.orders.filter(order => 
+                order.tableId !== state.currentTable || order.status === 'completed'
             );
             
-            saveToServer();
+            // Save data
+            saveData();
             
             // Reset UI
-            currentState.currentOrder = [];
-            currentState.selectedPayment = null;
+            state.currentOrder = [];
+            state.selectedPayment = null;
             hideModal('checkout-modal');
             updateOrderPanel();
             renderTables();
             
+            // Show success
             showNotification(`Payment of $${total.toFixed(2)} completed!`, 'success');
+            
+            // Vibrate on mobile
+            if ('vibrate' in navigator) {
+                navigator.vibrate([50, 30, 50]);
+            }
         }
 
         function clearOrder() {
+            if (state.currentOrder.length === 0) return;
+            
             if (!confirm('Clear current order?')) return;
             
-            currentState.currentOrder = [];
+            state.currentOrder = [];
+            
+            // Update table in server data
+            if (state.serverData && state.currentTable) {
+                const tableIndex = state.serverData.tables.findIndex(t => t.id === state.currentTable);
+                if (tableIndex !== -1) {
+                    state.serverData.tables[tableIndex].currentOrder = [];
+                }
+            }
+            
             updateOrderPanel();
             renderMenu();
             showNotification('Order cleared', 'info');
         }
 
-        // ==================== MODAL FUNCTIONS ====================
+        // ==================== MOBILE UI FUNCTIONS ====================
+        function toggleOrderPanel() {
+            const panel = document.getElementById('order-panel');
+            const toggleBtn = document.getElementById('order-toggle');
+            
+            panel.classList.toggle('active');
+            
+            if (panel.classList.contains('active')) {
+                toggleBtn.textContent = '📋 Close';
+                // Update order items when opening
+                updateOrderPanel();
+            } else {
+                toggleBtn.textContent = '📋 Order';
+            }
+        }
+
+        function showSection(section) {
+            // Update active nav item
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.mobile-nav-item').classList.add('active');
+            
+            // Scroll to appropriate section
+            if (section === 'tables') {
+                document.querySelector('.tables-sidebar').scrollIntoView({ behavior: 'smooth' });
+            } else if (section === 'menu') {
+                document.querySelector('.menu-area').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function setupTouchEvents() {
+            let startY;
+            const panel = document.getElementById('order-panel');
+            
+            // Swipe up to open order panel
+            document.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!startY) return;
+                
+                const currentY = e.touches[0].clientY;
+                const diff = startY - currentY;
+                
+                // Swipe up from bottom
+                if (diff > 50 && window.innerHeight - startY < 100) {
+                    panel.classList.add('active');
+                }
+                
+                // Swipe down to close
+                if (diff < -50 && panel.classList.contains('active')) {
+                    panel.classList.remove('active');
+                }
+            }, { passive: true });
+            
+            document.addEventListener('touchend', () => {
+                startY = null;
+            }, { passive: true });
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
         function showModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
         }
 
         function hideModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            // Restore body scroll
+            document.body.style.overflow = '';
         }
 
         function showNotification(message, type = 'info') {
@@ -1019,13 +1435,72 @@
             
             setTimeout(() => {
                 notification.style.opacity = '0';
-                notification.style.transform = 'translateX(100%)';
+                notification.style.transform = 'translateY(-20px)';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
 
-        // ==================== INITIALIZE ====================
-        window.addEventListener('load', init);
+        function updateSyncStatus() {
+            const statusEl = document.getElementById('sync-status');
+            const updateEl = document.getElementById('last-update');
+            
+            if (navigator.onLine) {
+                statusEl.className = 'sync-status online';
+                statusEl.textContent = '🟢 Online';
+            } else {
+                statusEl.className = 'sync-status offline';
+                statusEl.textContent = '🔴 Offline';
+            }
+            
+            if (state.lastSync) {
+                const date = new Date(state.lastSync);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+                
+                if (diff < 5) {
+                    updateEl.textContent = 'Last update: Just now';
+                } else if (diff < 60) {
+                    updateEl.textContent = `Last update: ${diff} sec ago`;
+                } else {
+                    updateEl.textContent = `Last update: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                }
+            }
+        }
+
+        // ==================== PWA SUPPORT ====================
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        // Install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button after delay
+            setTimeout(() => {
+                if (deferredPrompt && confirm('Install this app for better experience?')) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(() => {
+                        deferredPrompt = null;
+                    });
+                }
+            }, 10000);
+        });
+
+        // Prevent accidental refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (state.currentOrder.length > 0) {
+                e.preventDefault();
+                e.returnValue = 'You have an active order. Are you sure you want to leave?';
+            }
+        });
     </script>
 </body>
 </html>
