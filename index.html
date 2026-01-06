@@ -784,7 +784,84 @@
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
+        // ==================== SYNC WITH KITCHEN ====================
+function saveOrderToKitchen(orderData) {
+    // Get existing kitchen orders
+    let kitchenOrders = [];
+    try {
+        const saved = localStorage.getItem('kitchenOrders');
+        if (saved) {
+            kitchenOrders = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Error loading kitchen orders:', e);
+    }
+    
+    // Add new order
+    kitchenOrders.push({
+        id: 'ORD-' + Date.now(),
+        tableNumber: orderData.tableNumber,
+        items: orderData.items,
+        status: 'pending',
+        timestamp: new Date()
+    });
+    
+    // Save back to localStorage
+    localStorage.setItem('kitchenOrders', JSON.stringify(kitchenOrders));
+    
+    // Trigger storage event for kitchen page
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'kitchenOrders',
+        newValue: JSON.stringify(kitchenOrders),
+        oldValue: localStorage.getItem('kitchenOrders')
+    }));
+}
 
+// Update the submitOrder function in index.html
+function submitOrder() {
+    if (!appState.currentTable) {
+        showNotification('Please select a table', 'error');
+        return;
+    }
+
+    if (appState.currentOrder.length === 0) {
+        showNotification('Please add items to order', 'error');
+        return;
+    }
+
+    const table = getTableById(appState.currentTable);
+    
+    // Update table status
+    table.status = 'occupied';
+    
+    // Save order to kitchen
+    const orderData = {
+        tableId: appState.currentTable,
+        tableNumber: table.number,
+        items: [...appState.currentOrder],
+        status: 'pending',
+        timestamp: new Date()
+    };
+    
+    saveOrderToKitchen(orderData);
+    
+    // Update local state
+    const existingOrderIndex = appState.orders.findIndex(order => order.tableId === appState.currentTable);
+    if (existingOrderIndex >= 0) {
+        appState.orders[existingOrderIndex] = orderData;
+    } else {
+        appState.orders.push(orderData);
+    }
+
+    renderTables();
+    updateOrderPanel();
+    showNotification('Order sent to kitchen!', 'success');
+    
+    // Clear current order
+    appState.currentOrder = [];
+    updateOrderPanel();
+    renderMenu();
+}
         // ==================== INITIALIZE ON LOAD ====================
         window.addEventListener('load', initApp);
 
