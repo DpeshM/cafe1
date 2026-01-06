@@ -12,15 +12,15 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1f2937;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
             color: white;
+            min-height: 100vh;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #dc2626 0%, #7c2d12 100%);
-            color: white;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             padding: 20px;
             display: flex;
             justify-content: space-between;
@@ -35,9 +35,10 @@
             gap: 10px;
         }
 
-        .header-buttons {
+        .header-controls {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .btn {
@@ -48,20 +49,51 @@
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
+            color: white;
         }
 
         .btn-primary {
             background: #3b82f6;
-            color: white;
         }
 
         .btn-primary:hover {
             background: #2563eb;
-            transform: translateY(-2px);
         }
 
-        /* Kitchen Display */
-        .kitchen-container {
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: black;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .sync-status {
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .sync-status.online {
+            color: #10b981;
+        }
+
+        .sync-status.offline {
+            color: #ef4444;
+        }
+
+        /* Kitchen Grid */
+        .kitchen-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 20px;
@@ -71,10 +103,10 @@
         }
 
         .order-column {
-            background: #374151;
+            background: #1e293b;
             border-radius: 12px;
             padding: 20px;
-            min-height: 500px;
+            min-height: 600px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
@@ -84,16 +116,30 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #dc2626;
+            border-bottom: 3px solid;
+        }
+
+        .column-header.pending {
+            border-color: #f59e0b;
+        }
+
+        .column-header.preparing {
+            border-color: #3b82f6;
+        }
+
+        .column-header.ready {
+            border-color: #10b981;
         }
 
         .column-header h2 {
-            color: #fbbf24;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .order-count {
-            background: #dc2626;
+            background: currentColor;
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
@@ -101,6 +147,19 @@
             font-size: 0.9rem;
         }
 
+        .pending .order-count {
+            background: #f59e0b;
+        }
+
+        .preparing .order-count {
+            background: #3b82f6;
+        }
+
+        .ready .order-count {
+            background: #10b981;
+        }
+
+        /* Orders List */
         .orders-list {
             display: flex;
             flex-direction: column;
@@ -108,10 +167,10 @@
         }
 
         .order-card {
-            background: #4b5563;
+            background: #334155;
             border-radius: 10px;
             padding: 20px;
-            border-left: 5px solid #fbbf24;
+            border-left: 5px solid;
             animation: slideIn 0.3s ease-out;
             transition: all 0.3s;
         }
@@ -121,9 +180,16 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .order-card.completed {
+        .order-card.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .order-card.preparing {
+            border-left-color: #3b82f6;
+        }
+
+        .order-card.ready {
             border-left-color: #10b981;
-            opacity: 0.7;
         }
 
         .order-header {
@@ -140,8 +206,21 @@
         }
 
         .order-time {
-            color: #9ca3af;
+            color: #94a3b8;
             font-size: 0.9rem;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .timer-icon {
+            animation: pulse 1s infinite;
         }
 
         .order-items {
@@ -152,7 +231,7 @@
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px dashed #6b7280;
+            border-bottom: 1px dashed #475569;
         }
 
         .order-item:last-child {
@@ -178,16 +257,17 @@
             font-weight: bold;
         }
 
-        .item-note {
-            color: #9ca3af;
-            font-size: 0.85rem;
-            margin-left: 35px;
-            font-style: italic;
-        }
-
         .item-price {
             color: #10b981;
             font-weight: bold;
+        }
+
+        .special-instructions {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-style: italic;
+            padding-left: 35px;
         }
 
         .order-actions {
@@ -202,68 +282,11 @@
             font-size: 0.9rem;
         }
 
-        .btn-start {
-            background: #f59e0b;
-            color: black;
-        }
-
-        .btn-start:hover {
-            background: #d97706;
-        }
-
-        .btn-ready {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-ready:hover {
-            background: #059669;
-        }
-
-        .btn-complete {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .btn-complete:hover {
-            background: #2563eb;
-        }
-
-        /* Timer */
-        .order-timer {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #fbbf24;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        .timer-icon {
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #9ca3af;
+            color: #94a3b8;
         }
 
         .empty-state h3 {
@@ -271,7 +294,7 @@
             margin-bottom: 10px;
         }
 
-        /* Notification */
+        /* Notifications */
         .notification {
             position: fixed;
             bottom: 20px;
@@ -297,14 +320,41 @@
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         }
 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         @keyframes slideUp {
             from { transform: translateY(100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
+        /* Sound Toggle */
+        .sound-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .kitchen-container {
+            .kitchen-grid {
                 grid-template-columns: 1fr;
                 padding: 10px;
             }
@@ -315,15 +365,10 @@
                 text-align: center;
             }
             
-            .header-buttons {
-                width: 100%;
+            .header-controls {
+                flex-wrap: wrap;
                 justify-content: center;
             }
-        }
-
-        /* Sound Notification */
-        #sound-notification {
-            display: none;
         }
     </style>
 </head>
@@ -334,18 +379,22 @@
             <span>👨‍🍳</span>
             Kitchen Display System
         </h1>
-        <div class="header-buttons">
+        <div class="header-controls">
             <a href="index.html" class="btn btn-primary">← Back to POS</a>
-            <button class="btn btn-primary" onclick="refreshOrders()">🔄 Refresh</button>
-            <button class="btn btn-primary" onclick="toggleSound()" id="sound-toggle">🔇 Sound Off</button>
+            <div id="sync-status" class="sync-status online">🟢 Synced</div>
+            <button class="btn btn-success" onclick="refreshOrders()">🔄 Refresh</button>
+            <div class="sound-toggle" onclick="toggleSound()" id="sound-toggle">
+                <span>🔇</span>
+                <span>Sound Off</span>
+            </div>
         </div>
     </div>
 
     <!-- Kitchen Display -->
-    <div class="kitchen-container">
+    <div class="kitchen-grid">
         <!-- Pending Orders -->
         <div class="order-column">
-            <div class="column-header">
+            <div class="column-header pending">
                 <h2>🕐 Pending Orders</h2>
                 <div class="order-count" id="pending-count">0</div>
             </div>
@@ -359,7 +408,7 @@
 
         <!-- Preparing Orders -->
         <div class="order-column">
-            <div class="column-header">
+            <div class="column-header preparing">
                 <h2>👨‍🍳 Preparing</h2>
                 <div class="order-count" id="preparing-count">0</div>
             </div>
@@ -371,10 +420,10 @@
             </div>
         </div>
 
-        <!-- Ready for Pickup -->
+        <!-- Ready Orders -->
         <div class="order-column">
-            <div class="column-header">
-                <h2>✅ Ready</h2>
+            <div class="column-header ready">
+                <h2>✅ Ready for Pickup</h2>
                 <div class="order-count" id="ready-count">0</div>
             </div>
             <div class="orders-list" id="ready-orders">
@@ -386,241 +435,234 @@
         </div>
     </div>
 
-    <!-- Sound Element -->
+    <!-- Notifications Container -->
+    <div id="notification-container"></div>
+
+    <!-- Sound Notification -->
     <audio id="sound-notification" preload="auto">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-kitchen-timer-1003.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Notifications Container -->
-    <div id="notification-container"></div>
-
     <script>
-        // ==================== STATE MANAGEMENT ====================
-        let kitchenOrders = [];
-        let soundEnabled = false;
-        let autoRefresh = null;
+        // ==================== CONFIGURATION ====================
+        const SERVER_KEY = 'restaurant_pos_server_data';
+        const UPDATE_INTERVAL = 3000; // 3 seconds
+        let kitchenData = {
+            orders: [],
+            lastUpdate: null,
+            soundEnabled: false
+        };
 
-        // ==================== INITIALIZE ====================
+        // ==================== INITIALIZATION ====================
         function initKitchen() {
-            loadOrders();
-            setupAutoRefresh();
-            
-            // Check if we have orders in localStorage from POS
-            const ordersFromPOS = localStorage.getItem('kitchenOrders');
-            if (ordersFromPOS) {
+            loadData();
+            setupEventListeners();
+            startAutoRefresh();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(SERVER_KEY);
+            if (saved) {
                 try {
-                    kitchenOrders = JSON.parse(ordersFromPOS);
+                    const serverData = JSON.parse(saved);
+                    kitchenData.orders = serverData.orders || [];
+                    kitchenData.lastUpdate = serverData.lastUpdate;
                     renderOrders();
                 } catch (e) {
-                    console.error('Error loading orders:', e);
+                    console.error('Error loading data:', e);
                 }
             }
         }
 
-        // ==================== ORDER MANAGEMENT ====================
-        function loadOrders() {
-            // Try to load from localStorage
-            const savedOrders = localStorage.getItem('kitchenOrders');
-            if (savedOrders) {
-                try {
-                    kitchenOrders = JSON.parse(savedOrders);
-                } catch (e) {
-                    console.error('Error parsing orders:', e);
-                    kitchenOrders = [];
+        function setupEventListeners() {
+            // Listen for updates from other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === SERVER_KEY) {
+                    const oldOrdersLength = kitchenData.orders.length;
+                    loadData();
+                    
+                    // Check if new orders were added
+                    if (kitchenData.orders.length > oldOrdersLength) {
+                        showNotification('New order received!', 'new');
+                        if (kitchenData.soundEnabled) {
+                            playNotificationSound();
+                        }
+                    }
+                    
+                    updateSyncStatus();
                 }
-            }
+            });
             
-            // If no saved orders, create demo data
-            if (kitchenOrders.length === 0) {
-                createDemoOrders();
-            }
-            
-            renderOrders();
+            // Auto-refresh every 30 seconds as backup
+            setInterval(loadData, 30000);
         }
 
-        function createDemoOrders() {
-            const demoOrders = [
-                {
-                    id: generateOrderId(),
-                    tableNumber: 3,
-                    items: [
-                        { name: "Burger", quantity: 2, price: 8.99, note: "No onions" },
-                        { name: "Fries", quantity: 1, price: 3.99 }
-                    ],
-                    status: "pending",
-                    timestamp: new Date(Date.now() - 600000), // 10 minutes ago
-                    timer: 600000
-                },
-                {
-                    id: generateOrderId(),
-                    tableNumber: 5,
-                    items: [
-                        { name: "Pizza", quantity: 1, price: 12.99 },
-                        { name: "Coke", quantity: 3, price: 1.99 }
-                    ],
-                    status: "preparing",
-                    timestamp: new Date(Date.now() - 300000), // 5 minutes ago
-                    timer: 300000
-                },
-                {
-                    id: generateOrderId(),
-                    tableNumber: 7,
-                    items: [
-                        { name: "Salad", quantity: 1, price: 6.99, note: "Extra dressing" },
-                        { name: "Water", quantity: 2, price: 0.99 }
-                    ],
-                    status: "ready",
-                    timestamp: new Date(Date.now() - 120000), // 2 minutes ago
-                    timer: 120000
-                }
-            ];
-            
-            kitchenOrders = demoOrders;
-            saveOrders();
-        }
-
-        function generateOrderId() {
-            return 'ORD-' + Date.now().toString().slice(-6) + Math.random().toString(36).substr(2, 3).toUpperCase();
-        }
-
-        function saveOrders() {
-            localStorage.setItem('kitchenOrders', JSON.stringify(kitchenOrders));
+        function startAutoRefresh() {
+            setInterval(() => {
+                loadData();
+            }, UPDATE_INTERVAL);
         }
 
         // ==================== RENDER FUNCTIONS ====================
         function renderOrders() {
-            const pendingOrders = kitchenOrders.filter(order => order.status === 'pending');
-            const preparingOrders = kitchenOrders.filter(order => order.status === 'preparing');
-            const readyOrders = kitchenOrders.filter(order => order.status === 'ready');
-
+            const pendingOrders = kitchenData.orders.filter(order => order.status === 'pending');
+            const preparingOrders = kitchenData.orders.filter(order => order.status === 'preparing');
+            const readyOrders = kitchenData.orders.filter(order => order.status === 'ready');
+            
             // Update counts
             document.getElementById('pending-count').textContent = pendingOrders.length;
             document.getElementById('preparing-count').textContent = preparingOrders.length;
             document.getElementById('ready-count').textContent = readyOrders.length;
-
+            
             // Render each column
-            renderOrderColumn('pending-orders', pendingOrders, true);
-            renderOrderColumn('preparing-orders', preparingOrders, true);
-            renderOrderColumn('ready-orders', readyOrders, false);
+            renderOrderColumn('pending-orders', pendingOrders, 'pending');
+            renderOrderColumn('preparing-orders', preparingOrders, 'preparing');
+            renderOrderColumn('ready-orders', readyOrders, 'ready');
         }
 
-        function renderOrderColumn(containerId, orders, showActions = true) {
+        function renderOrderColumn(containerId, orders, status) {
             const container = document.getElementById(containerId);
             
             if (orders.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>No ${containerId.replace('-', ' ')}</h3>
+                        <h3>No ${status} orders</h3>
                         <p>Waiting for new orders...</p>
                     </div>
                 `;
                 return;
             }
-
-            container.innerHTML = orders.map(order => `
-                <div class="order-card ${order.status === 'ready' ? 'completed' : ''}" id="order-${order.id}">
-                    <div class="order-header">
-                        <div class="table-number">Table ${order.tableNumber}</div>
-                        <div class="order-time">${formatTime(order.timestamp)}</div>
-                    </div>
-                    
-                    <div class="order-items">
-                        ${order.items.map(item => `
-                            <div class="order-item">
-                                <div class="item-name">
-                                    <span class="item-qty">${item.quantity}</span>
-                                    ${item.name}
-                                </div>
-                                <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
-                            </div>
-                            ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
-                        `).join('')}
-                    </div>
-
-                    ${order.status === 'pending' || order.status === 'preparing' ? `
-                        <div class="order-timer">
-                            <span class="timer-icon">⏱️</span>
-                            <span>${formatTimeElapsed(order.timestamp)}</span>
+            
+            container.innerHTML = orders.map(order => {
+                const timeElapsed = getTimeElapsed(order.createdAt);
+                const total = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                return `
+                    <div class="order-card ${status}" id="order-${order.id}">
+                        <div class="order-header">
+                            <div class="table-number">Table ${order.tableNumber}</div>
+                            <div class="order-time">${formatTime(order.createdAt)}</div>
                         </div>
-                    ` : ''}
-
-                    ${showActions ? `
+                        
+                        <div class="timer">
+                            <span class="timer-icon">⏱️</span>
+                            <span>${timeElapsed}</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <div class="item-name">
+                                        <span class="item-qty">${item.quantity}</span>
+                                        ${item.name}
+                                    </div>
+                                    <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="order-total" style="text-align: right; font-weight: bold; margin: 10px 0;">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                        
                         <div class="order-actions">
-                            ${order.status === 'pending' ? `
-                                <button class="btn btn-start" onclick="updateOrderStatus('${order.id}', 'preparing')">
+                            ${status === 'pending' ? `
+                                <button class="btn btn-warning" onclick="updateOrderStatus('${order.id}', 'preparing')">
                                     Start Preparing
                                 </button>
                             ` : ''}
                             
-                            ${order.status === 'preparing' ? `
-                                <button class="btn btn-ready" onclick="updateOrderStatus('${order.id}', 'ready')">
-                                    Mark Ready
+                            ${status === 'preparing' ? `
+                                <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'ready')">
+                                    Mark as Ready
                                 </button>
                             ` : ''}
                             
-                            ${order.status === 'ready' ? `
-                                <button class="btn btn-complete" onclick="completeOrder('${order.id}')">
-                                    Order Picked Up
+                            ${status === 'ready' ? `
+                                <button class="btn btn-primary" onclick="completeOrder('${order.id}')">
+                                    Picked Up
                                 </button>
                             ` : ''}
                         </div>
-                    ` : ''}
-                </div>
-            `).join('');
+                    </div>
+                `;
+            }).join('');
         }
 
         // ==================== ORDER ACTIONS ====================
         function updateOrderStatus(orderId, newStatus) {
-            const orderIndex = kitchenOrders.findIndex(order => order.id === orderId);
-            if (orderIndex === -1) return;
-
-            const oldStatus = kitchenOrders[orderIndex].status;
-            kitchenOrders[orderIndex].status = newStatus;
-            kitchenOrders[orderIndex].lastUpdated = new Date();
-
-            saveOrders();
-            renderOrders();
+            const saved = localStorage.getItem(SERVER_KEY);
+            if (!saved) return;
             
-            // Show notification
-            showNotification(`Order from Table ${kitchenOrders[orderIndex].tableNumber} moved to ${newStatus}`, 'update');
-            
-            // Play sound if enabled
-            if (soundEnabled && oldStatus !== newStatus) {
-                playNotificationSound();
+            try {
+                const serverData = JSON.parse(saved);
+                const orderIndex = serverData.orders.findIndex(order => order.id === orderId);
+                
+                if (orderIndex !== -1) {
+                    const oldStatus = serverData.orders[orderIndex].status;
+                    serverData.orders[orderIndex].status = newStatus;
+                    serverData.orders[orderIndex].updatedAt = new Date().toISOString();
+                    serverData.lastUpdate = new Date().toISOString();
+                    
+                    localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
+                    
+                    // Update local data
+                    kitchenData.orders = serverData.orders;
+                    renderOrders();
+                    
+                    showNotification(`Order ${orderId} moved to ${newStatus}`, 'update');
+                    
+                    // Play sound if enabled and status changed
+                    if (kitchenData.soundEnabled && oldStatus !== newStatus) {
+                        playNotificationSound();
+                    }
+                }
+            } catch (e) {
+                console.error('Error updating order:', e);
+                showNotification('Failed to update order', 'error');
             }
         }
 
         function completeOrder(orderId) {
-            if (!confirm('Mark this order as completed and picked up?')) return;
+            if (!confirm('Mark this order as completed?')) return;
             
-            const orderIndex = kitchenOrders.findIndex(order => order.id === orderId);
-            if (orderIndex === -1) return;
-
-            const tableNumber = kitchenOrders[orderIndex].tableNumber;
+            const saved = localStorage.getItem(SERVER_KEY);
+            if (!saved) return;
             
-            // Remove order from list
-            kitchenOrders.splice(orderIndex, 1);
-            
-            saveOrders();
-            renderOrders();
-            
-            showNotification(`Order from Table ${tableNumber} completed!`, 'completed');
-            
-            // Play sound if enabled
-            if (soundEnabled) {
-                playNotificationSound();
+            try {
+                const serverData = JSON.parse(saved);
+                
+                // Remove order from kitchen display
+                serverData.orders = serverData.orders.filter(order => order.id !== orderId);
+                serverData.lastUpdate = new Date().toISOString();
+                
+                localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
+                
+                // Update local data
+                kitchenData.orders = serverData.orders;
+                renderOrders();
+                
+                showNotification('Order marked as completed', 'completed');
+                
+                if (kitchenData.soundEnabled) {
+                    playNotificationSound();
+                }
+            } catch (e) {
+                console.error('Error completing order:', e);
+                showNotification('Failed to complete order', 'error');
             }
         }
 
         // ==================== UTILITY FUNCTIONS ====================
-        function formatTime(date) {
-            if (!date) return '';
-            const d = new Date(date);
-            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        function formatTimeElapsed(startTime) {
-            const start = new Date(startTime);
+        function getTimeElapsed(timestamp) {
+            if (!timestamp) return '';
+            const start = new Date(timestamp);
             const now = new Date();
             const diffMs = now - start;
             const diffMins = Math.floor(diffMs / 60000);
@@ -654,54 +696,44 @@
         }
 
         function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const button = document.getElementById('sound-toggle');
-            button.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-            button.classList.toggle('btn-primary', soundEnabled);
+            kitchenData.soundEnabled = !kitchenData.soundEnabled;
+            const toggle = document.getElementById('sound-toggle');
+            const icon = toggle.querySelector('span:first-child');
+            const text = toggle.querySelector('span:last-child');
+            
+            if (kitchenData.soundEnabled) {
+                icon.textContent = '🔊';
+                text.textContent = 'Sound On';
+            } else {
+                icon.textContent = '🔇';
+                text.textContent = 'Sound Off';
+            }
         }
 
         function refreshOrders() {
-            loadOrders();
+            loadData();
             showNotification('Orders refreshed', 'update');
         }
 
-        function setupAutoRefresh() {
-            // Auto-refresh every 30 seconds
-            if (autoRefresh) clearInterval(autoRefresh);
-            autoRefresh = setInterval(() => {
-                loadOrders();
-            }, 30000);
-        }
-
-        // ==================== COMMUNICATION WITH POS ====================
-        // Listen for new orders from POS
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'kitchenOrders') {
-                try {
-                    kitchenOrders = JSON.parse(event.newValue);
-                    renderOrders();
-                    
-                    // Check if new orders were added
-                    const oldOrders = JSON.parse(event.oldValue || '[]');
-                    if (kitchenOrders.length > oldOrders.length) {
-                        showNotification('New order received!', 'new');
-                        if (soundEnabled) {
-                            playNotificationSound();
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error processing storage event:', e);
+        function updateSyncStatus() {
+            const statusEl = document.getElementById('sync-status');
+            if (kitchenData.lastUpdate) {
+                const now = new Date();
+                const lastUpdate = new Date(kitchenData.lastUpdate);
+                const diff = Math.floor((now - lastUpdate) / 1000);
+                
+                if (diff > 10) {
+                    statusEl.className = 'sync-status offline';
+                    statusEl.textContent = '🔴 Offline';
+                } else {
+                    statusEl.className = 'sync-status online';
+                    statusEl.textContent = '🟢 Synced';
                 }
             }
-        });
+        }
 
         // ==================== INITIALIZE ====================
         window.addEventListener('load', initKitchen);
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            if (autoRefresh) clearInterval(autoRefresh);
-        });
     </script>
 </body>
 </html>
