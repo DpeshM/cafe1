@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1f2937;
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #7c2d12 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Kitchen Display */
+        .kitchen-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .order-column {
+            background: #374151;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .column-header h2 {
+            color: #fbbf24;
+            font-size: 1.5rem;
+        }
+
+        .order-count {
+            background: #dc2626;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .order-card {
+            background: #4b5563;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #fbbf24;
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .order-card.completed {
+            border-left-color: #10b981;
+            opacity: 0.7;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .table-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        .order-time {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #6b7280;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-qty {
+            background: #dc2626;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .item-note {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-left: 35px;
+            font-style: italic;
+        }
+
+        .item-price {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .order-actions .btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-start {
+            background: #f59e0b;
+            color: black;
+        }
+
+        .btn-start:hover {
+            background: #d97706;
+        }
+
+        .btn-ready {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-ready:hover {
+            background: #059669;
+        }
+
+        .btn-complete {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #2563eb;
+        }
+
+        /* Timer */
+        .order-timer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .timer-icon {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .notification.new {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .notification.update {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .notification.completed {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .kitchen-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Sound Notification */
+        #sound-notification {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>
+            <span>👨‍🍳</span>
+            Kitchen Display System
+        </h1>
+        <div class="header-buttons">
+            <a href="index.html" class="btn btn-primary">← Back to POS</a>
+            <button class="btn btn-primary" onclick="refreshOrders()">🔄 Refresh</button>
+            <button class="btn btn-primary" onclick="toggleSound()" id="sound-toggle">🔇 Sound Off</button>
+        </div>
+    </div>
+
+    <!-- Kitchen Display -->
+    <div class="kitchen-container">
+        <!-- Pending Orders -->
+        <div class="order-column">
+            <div class="column-header">
+                <h2>🕐 Pending Orders</h2>
+                <div class="order-count" id="pending-count">0</div>
+            </div>
+            <div class="orders-list" id="pending-orders">
+                <div class="empty-state">
+                    <h3>No pending orders</h3>
+                    <p>Waiting for new orders...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preparing Orders -->
+        <div class="order-column">
+            <div class="column-header">
+                <h2>👨‍🍳 Preparing</h2>
+                <div class="order-count" id="preparing-count">0</div>
+            </div>
+            <div class="orders-list" id="preparing-orders">
+                <div class="empty-state">
+                    <h3>No orders in progress</h3>
+                    <p>Start preparing pending orders</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ready for Pickup -->
+        <div class="order-column">
+            <div class="column-header">
+                <h2>✅ Ready</h2>
+                <div class="order-count" id="ready-count">0</div>
+            </div>
+            <div class="orders-list" id="ready-orders">
+                <div class="empty-state">
+                    <h3>No orders ready</h3>
+                    <p>Complete preparing orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound Element -->
+    <audio id="sound-notification" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-kitchen-timer-1003.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Notifications Container -->
+    <div id="notification-container"></div>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        let kitchenOrders = [];
+        let soundEnabled = false;
+        let autoRefresh = null;
+
+        // ==================== INITIALIZE ====================
+        function initKitchen() {
+            loadOrders();
+            setupAutoRefresh();
+            
+            // Check if we have orders in localStorage from POS
+            const ordersFromPOS = localStorage.getItem('kitchenOrders');
+            if (ordersFromPOS) {
+                try {
+                    kitchenOrders = JSON.parse(ordersFromPOS);
+                    renderOrders();
+                } catch (e) {
+                    console.error('Error loading orders:', e);
+                }
+            }
+        }
+
+        // ==================== ORDER MANAGEMENT ====================
+        function loadOrders() {
+            // Try to load from localStorage
+            const savedOrders = localStorage.getItem('kitchenOrders');
+            if (savedOrders) {
+                try {
+                    kitchenOrders = JSON.parse(savedOrders);
+                } catch (e) {
+                    console.error('Error parsing orders:', e);
+                    kitchenOrders = [];
+                }
+            }
+            
+            // If no saved orders, create demo data
+            if (kitchenOrders.length === 0) {
+                createDemoOrders();
+            }
+            
+            renderOrders();
+        }
+
+        function createDemoOrders() {
+            const demoOrders = [
+                {
+                    id: generateOrderId(),
+                    tableNumber: 3,
+                    items: [
+                        { name: "Burger", quantity: 2, price: 8.99, note: "No onions" },
+                        { name: "Fries", quantity: 1, price: 3.99 }
+                    ],
+                    status: "pending",
+                    timestamp: new Date(Date.now() - 600000), // 10 minutes ago
+                    timer: 600000
+                },
+                {
+                    id: generateOrderId(),
+                    tableNumber: 5,
+                    items: [
+                        { name: "Pizza", quantity: 1, price: 12.99 },
+                        { name: "Coke", quantity: 3, price: 1.99 }
+                    ],
+                    status: "preparing",
+                    timestamp: new Date(Date.now() - 300000), // 5 minutes ago
+                    timer: 300000
+                },
+                {
+                    id: generateOrderId(),
+                    tableNumber: 7,
+                    items: [
+                        { name: "Salad", quantity: 1, price: 6.99, note: "Extra dressing" },
+                        { name: "Water", quantity: 2, price: 0.99 }
+                    ],
+                    status: "ready",
+                    timestamp: new Date(Date.now() - 120000), // 2 minutes ago
+                    timer: 120000
+                }
+            ];
+            
+            kitchenOrders = demoOrders;
+            saveOrders();
+        }
+
+        function generateOrderId() {
+            return 'ORD-' + Date.now().toString().slice(-6) + Math.random().toString(36).substr(2, 3).toUpperCase();
+        }
+
+        function saveOrders() {
+            localStorage.setItem('kitchenOrders', JSON.stringify(kitchenOrders));
+        }
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderOrders() {
+            const pendingOrders = kitchenOrders.filter(order => order.status === 'pending');
+            const preparingOrders = kitchenOrders.filter(order => order.status === 'preparing');
+            const readyOrders = kitchenOrders.filter(order => order.status === 'ready');
+
+            // Update counts
+            document.getElementById('pending-count').textContent = pendingOrders.length;
+            document.getElementById('preparing-count').textContent = preparingOrders.length;
+            document.getElementById('ready-count').textContent = readyOrders.length;
+
+            // Render each column
+            renderOrderColumn('pending-orders', pendingOrders, true);
+            renderOrderColumn('preparing-orders', preparingOrders, true);
+            renderOrderColumn('ready-orders', readyOrders, false);
+        }
+
+        function renderOrderColumn(containerId, orders, showActions = true) {
+            const container = document.getElementById(containerId);
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No ${containerId.replace('-', ' ')}</h3>
+                        <p>Waiting for new orders...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card ${order.status === 'ready' ? 'completed' : ''}" id="order-${order.id}">
+                    <div class="order-header">
+                        <div class="table-number">Table ${order.tableNumber}</div>
+                        <div class="order-time">${formatTime(order.timestamp)}</div>
+                    </div>
+                    
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <div class="item-name">
+                                    <span class="item-qty">${item.quantity}</span>
+                                    ${item.name}
+                                </div>
+                                <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                            ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+                        `).join('')}
+                    </div>
+
+                    ${order.status === 'pending' || order.status === 'preparing' ? `
+                        <div class="order-timer">
+                            <span class="timer-icon">⏱️</span>
+                            <span>${formatTimeElapsed(order.timestamp)}</span>
+                        </div>
+                    ` : ''}
+
+                    ${showActions ? `
+                        <div class="order-actions">
+                            ${order.status === 'pending' ? `
+                                <button class="btn btn-start" onclick="updateOrderStatus('${order.id}', 'preparing')">
+                                    Start Preparing
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'preparing' ? `
+                                <button class="btn btn-ready" onclick="updateOrderStatus('${order.id}', 'ready')">
+                                    Mark Ready
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'ready' ? `
+                                <button class="btn btn-complete" onclick="completeOrder('${order.id}')">
+                                    Order Picked Up
+                                </button>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ==================== ORDER ACTIONS ====================
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = kitchenOrders.findIndex(order => order.id === orderId);
+            if (orderIndex === -1) return;
+
+            const oldStatus = kitchenOrders[orderIndex].status;
+            kitchenOrders[orderIndex].status = newStatus;
+            kitchenOrders[orderIndex].lastUpdated = new Date();
+
+            saveOrders();
+            renderOrders();
+            
+            // Show notification
+            showNotification(`Order from Table ${kitchenOrders[orderIndex].tableNumber} moved to ${newStatus}`, 'update');
+            
+            // Play sound if enabled
+            if (soundEnabled && oldStatus !== newStatus) {
+                playNotificationSound();
+            }
+        }
+
+        function completeOrder(orderId) {
+            if (!confirm('Mark this order as completed and picked up?')) return;
+            
+            const orderIndex = kitchenOrders.findIndex(order => order.id === orderId);
+            if (orderIndex === -1) return;
+
+            const tableNumber = kitchenOrders[orderIndex].tableNumber;
+            
+            // Remove order from list
+            kitchenOrders.splice(orderIndex, 1);
+            
+            saveOrders();
+            renderOrders();
+            
+            showNotification(`Order from Table ${tableNumber} completed!`, 'completed');
+            
+            // Play sound if enabled
+            if (soundEnabled) {
+                playNotificationSound();
+            }
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function formatTime(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatTimeElapsed(startTime) {
+            const start = new Date(startTime);
+            const now = new Date();
+            const diffMs = now - start;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins === 1) return '1 min ago';
+            return `${diffMins} mins ago`;
+        }
+
+        function showNotification(message, type = 'new') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function playNotificationSound() {
+            const sound = document.getElementById('sound-notification');
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('Sound play failed:', e));
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const button = document.getElementById('sound-toggle');
+            button.textContent = soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+            button.classList.toggle('btn-primary', soundEnabled);
+        }
+
+        function refreshOrders() {
+            loadOrders();
+            showNotification('Orders refreshed', 'update');
+        }
+
+        function setupAutoRefresh() {
+            // Auto-refresh every 30 seconds
+            if (autoRefresh) clearInterval(autoRefresh);
+            autoRefresh = setInterval(() => {
+                loadOrders();
+            }, 30000);
+        }
+
+        // ==================== COMMUNICATION WITH POS ====================
+        // Listen for new orders from POS
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'kitchenOrders') {
+                try {
+                    kitchenOrders = JSON.parse(event.newValue);
+                    renderOrders();
+                    
+                    // Check if new orders were added
+                    const oldOrders = JSON.parse(event.oldValue || '[]');
+                    if (kitchenOrders.length > oldOrders.length) {
+                        showNotification('New order received!', 'new');
+                        if (soundEnabled) {
+                            playNotificationSound();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error processing storage event:', e);
+                }
+            }
+        });
+
+        // ==================== INITIALIZE ====================
+        window.addEventListener('load', initKitchen);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (autoRefresh) clearInterval(autoRefresh);
+        });
+    </script>
+</body>
+</html>
