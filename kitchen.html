@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kitchen Display</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -16,47 +17,58 @@
             background: #0f172a;
             color: white;
             min-height: 100vh;
+            touch-action: manipulation;
         }
 
         /* Header */
         .header {
             background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            padding: 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             color: white;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn-primary {
             background: #3b82f6;
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: #2563eb;
         }
 
@@ -64,7 +76,7 @@
             background: #10b981;
         }
 
-        .btn-success:hover {
+        .btn-success:active {
             background: #059669;
         }
 
@@ -73,15 +85,16 @@
             color: black;
         }
 
-        .btn-warning:hover {
+        .btn-warning:active {
             background: #d97706;
         }
 
         .sync-status {
-            padding: 8px 15px;
+            padding: 6px 12px;
             background: rgba(255,255,255,0.1);
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
 
         .sync-status.online {
@@ -92,30 +105,56 @@
             color: #ef4444;
         }
 
+        /* Kitchen Tabs for Mobile */
+        .kitchen-tabs {
+            display: none;
+            background: #1e293b;
+            position: sticky;
+            top: 56px;
+            z-index: 999;
+        }
+
+        .kitchen-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .kitchen-tab.active {
+            color: white;
+            border-bottom-color: #dc2626;
+        }
+
         /* Kitchen Grid */
         .kitchen-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            gap: 15px;
+            padding: 15px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .order-column {
             background: #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            min-height: 600px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 500px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .column-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
             border-bottom: 3px solid;
         }
 
@@ -132,19 +171,19 @@
         }
 
         .column-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .order-count {
             background: currentColor;
             color: white;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .pending .order-count {
@@ -163,21 +202,20 @@
         .orders-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .order-card {
             background: #334155;
-            border-radius: 10px;
-            padding: 20px;
-            border-left: 5px solid;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid;
             animation: slideIn 0.3s ease-out;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
-        .order-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        .order-card:active {
+            transform: scale(0.99);
         }
 
         .order-card.pending {
@@ -196,27 +234,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .table-number {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #fbbf24;
         }
 
         .order-time {
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .timer {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             color: #fbbf24;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 0.8rem;
+            margin-top: 4px;
         }
 
         .timer-icon {
@@ -224,13 +262,13 @@
         }
 
         .order-items {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .order-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px dashed #475569;
         }
 
@@ -241,71 +279,78 @@
         .item-name {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .item-qty {
             background: #dc2626;
             color: white;
-            width: 25px;
-            height: 25px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .item-price {
             color: #10b981;
             font-weight: bold;
+            font-size: 0.85rem;
         }
 
         .special-instructions {
             color: #94a3b8;
-            font-size: 0.85rem;
-            margin-top: 5px;
+            font-size: 0.8rem;
+            margin-top: 4px;
             font-style: italic;
-            padding-left: 35px;
+            padding-left: 30px;
         }
 
         .order-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .order-actions .btn {
             flex: 1;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 8px;
+            font-size: 0.85rem;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 40px 15px;
             color: #94a3b8;
         }
 
         .empty-state h3 {
             color: #fbbf24;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
         /* Notifications */
         .notification {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
+            left: 15px;
+            right: 15px;
+            padding: 12px 20px;
             border-radius: 8px;
             color: white;
             font-weight: 600;
-            z-index: 1000;
+            z-index: 1100;
             animation: slideUp 0.3s ease-out;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         .notification.new {
@@ -323,7 +368,7 @@
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(15px);
             }
             to {
                 opacity: 1;
@@ -345,29 +390,120 @@
         .sound-toggle {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             cursor: pointer;
-            padding: 8px 15px;
+            padding: 6px 12px;
             background: rgba(255,255,255,0.1);
             border-radius: 6px;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
-        /* Responsive */
+        /* Mobile Views */
         @media (max-width: 768px) {
             .kitchen-grid {
                 grid-template-columns: 1fr;
                 padding: 10px;
+                gap: 10px;
             }
             
             .header {
                 flex-direction: column;
-                gap: 15px;
+                gap: 10px;
                 text-align: center;
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
             }
             
             .header-controls {
-                flex-wrap: wrap;
+                width: 100%;
                 justify-content: center;
+                gap: 6px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .sync-status {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .sound-toggle {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .kitchen-tabs {
+                display: flex;
+            }
+            
+            .order-column {
+                min-height: auto;
+                display: none;
+            }
+            
+            .order-column.active {
+                display: block;
+            }
+            
+            .order-card {
+                padding: 12px;
+            }
+            
+            .table-number {
+                font-size: 1.3rem;
+            }
+            
+            .order-actions {
+                flex-direction: column;
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kitchen-grid {
+                padding: 8px;
+            }
+            
+            .order-column {
+                padding: 12px;
+            }
+            
+            .column-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .notification {
+                left: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Swipe between columns */
+        .swipe-hint {
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            padding: 8px;
+            z-index: 800;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .swipe-hint {
+                display: block;
             }
         }
     </style>
@@ -377,7 +513,7 @@
     <div class="header">
         <h1>
             <span>👨‍🍳</span>
-            Kitchen Display System
+            Kitchen Display
         </h1>
         <div class="header-controls">
             <a href="index.html" class="btn btn-primary">← Back to POS</a>
@@ -390,10 +526,17 @@
         </div>
     </div>
 
+    <!-- Kitchen Tabs (Mobile) -->
+    <div class="kitchen-tabs">
+        <div class="kitchen-tab active" onclick="showColumn('pending')">🕐 Pending</div>
+        <div class="kitchen-tab" onclick="showColumn('preparing')">👨‍🍳 Preparing</div>
+        <div class="kitchen-tab" onclick="showColumn('ready')">✅ Ready</div>
+    </div>
+
     <!-- Kitchen Display -->
     <div class="kitchen-grid">
         <!-- Pending Orders -->
-        <div class="order-column">
+        <div class="order-column pending active" id="pending-column">
             <div class="column-header pending">
                 <h2>🕐 Pending Orders</h2>
                 <div class="order-count" id="pending-count">0</div>
@@ -407,7 +550,7 @@
         </div>
 
         <!-- Preparing Orders -->
-        <div class="order-column">
+        <div class="order-column preparing" id="preparing-column">
             <div class="column-header preparing">
                 <h2>👨‍🍳 Preparing</h2>
                 <div class="order-count" id="preparing-count">0</div>
@@ -421,7 +564,7 @@
         </div>
 
         <!-- Ready Orders -->
-        <div class="order-column">
+        <div class="order-column ready" id="ready-column">
             <div class="column-header ready">
                 <h2>✅ Ready for Pickup</h2>
                 <div class="order-count" id="ready-count">0</div>
@@ -435,6 +578,11 @@
         </div>
     </div>
 
+    <!-- Swipe Hint -->
+    <div class="swipe-hint">
+        ← Swipe to change view →
+    </div>
+
     <!-- Notifications Container -->
     <div id="notification-container"></div>
 
@@ -445,69 +593,114 @@
 
     <script>
         // ==================== CONFIGURATION ====================
-        const SERVER_KEY = 'restaurant_pos_server_data';
-        const UPDATE_INTERVAL = 3000; // 3 seconds
-        let kitchenData = {
+        const APP_NAME = 'RestaurantPOS';
+        const STORAGE_KEY = APP_NAME + '_server_data';
+        const SYNC_INTERVAL = 3000; // 3 seconds
+        
+        // ==================== STATE MANAGEMENT ====================
+        let kitchenState = {
             orders: [],
             lastUpdate: null,
-            soundEnabled: false
+            soundEnabled: false,
+            activeColumn: 'pending',
+            syncInterval: null
         };
 
         // ==================== INITIALIZATION ====================
-        function initKitchen() {
-            loadData();
-            setupEventListeners();
-            startAutoRefresh();
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeKitchen();
+            setupSwipeEvents();
+        });
 
-        function loadData() {
-            const saved = localStorage.getItem(SERVER_KEY);
-            if (saved) {
-                try {
-                    const serverData = JSON.parse(saved);
-                    kitchenData.orders = serverData.orders || [];
-                    kitchenData.lastUpdate = serverData.lastUpdate;
-                    renderOrders();
-                } catch (e) {
-                    console.error('Error loading data:', e);
-                }
+        function initializeKitchen() {
+            loadData();
+            startSyncLoop();
+            setupEventListeners();
+            
+            // Initial render
+            renderOrders();
+            
+            // Show demo data if empty
+            if (kitchenState.orders.length === 0) {
+                setTimeout(() => {
+                    loadData(); // Check again
+                    if (kitchenState.orders.length === 0) {
+                        showNotification('No orders found. Start taking orders in POS.', 'info');
+                    }
+                }, 1000);
             }
         }
 
-        function setupEventListeners() {
-            // Listen for updates from other tabs
-            window.addEventListener('storage', (e) => {
-                if (e.key === SERVER_KEY) {
-                    const oldOrdersLength = kitchenData.orders.length;
-                    loadData();
+        function loadData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                
+                if (saved) {
+                    const serverData = JSON.parse(saved);
+                    const oldOrderCount = kitchenState.orders.length;
                     
-                    // Check if new orders were added
-                    if (kitchenData.orders.length > oldOrdersLength) {
+                    // Update orders
+                    kitchenState.orders = serverData.orders || [];
+                    kitchenState.lastUpdate = serverData.lastUpdate;
+                    
+                    // Check for new orders
+                    if (kitchenState.orders.length > oldOrderCount) {
                         showNotification('New order received!', 'new');
-                        if (kitchenData.soundEnabled) {
+                        if (kitchenState.soundEnabled) {
                             playNotificationSound();
+                        }
+                        // Vibrate on mobile
+                        if ('vibrate' in navigator) {
+                            navigator.vibrate(200);
                         }
                     }
                     
+                    renderOrders();
                     updateSyncStatus();
+                }
+            } catch (e) {
+                console.error('Error loading kitchen data:', e);
+            }
+        }
+
+        // ==================== SYNC SYSTEM ====================
+        function startSyncLoop() {
+            // Clear existing interval
+            if (kitchenState.syncInterval) {
+                clearInterval(kitchenState.syncInterval);
+            }
+            
+            // Start new sync interval
+            kitchenState.syncInterval = setInterval(() => {
+                loadData();
+            }, SYNC_INTERVAL);
+        }
+
+        function setupEventListeners() {
+            // Listen for storage events from POS
+            window.addEventListener('storage', (e) => {
+                if (e.key === STORAGE_KEY) {
+                    loadData();
                 }
             });
             
-            // Auto-refresh every 30 seconds as backup
-            setInterval(loadData, 30000);
-        }
-
-        function startAutoRefresh() {
-            setInterval(() => {
-                loadData();
-            }, UPDATE_INTERVAL);
+            // Online/offline status
+            window.addEventListener('online', updateSyncStatus);
+            window.addEventListener('offline', updateSyncStatus);
+            
+            // Page visibility
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    loadData(); // Refresh when tab becomes visible
+                }
+            });
         }
 
         // ==================== RENDER FUNCTIONS ====================
         function renderOrders() {
-            const pendingOrders = kitchenData.orders.filter(order => order.status === 'pending');
-            const preparingOrders = kitchenData.orders.filter(order => order.status === 'preparing');
-            const readyOrders = kitchenData.orders.filter(order => order.status === 'ready');
+            const pendingOrders = kitchenState.orders.filter(order => order.status === 'pending');
+            const preparingOrders = kitchenState.orders.filter(order => order.status === 'preparing');
+            const readyOrders = kitchenState.orders.filter(order => order.status === 'ready');
             
             // Update counts
             document.getElementById('pending-count').textContent = pendingOrders.length;
@@ -527,11 +720,14 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <h3>No ${status} orders</h3>
-                        <p>Waiting for new orders...</p>
+                        <p>${getEmptyStateMessage(status)}</p>
                     </div>
                 `;
                 return;
             }
+            
+            // Sort by creation time (oldest first)
+            orders.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             
             container.innerHTML = orders.map(order => {
                 const timeElapsed = getTimeElapsed(order.createdAt);
@@ -561,7 +757,7 @@
                             `).join('')}
                         </div>
                         
-                        <div class="order-total" style="text-align: right; font-weight: bold; margin: 10px 0;">
+                        <div style="text-align: right; font-weight: bold; margin: 8px 0; font-size: 0.9rem;">
                             Total: $${total.toFixed(2)}
                         </div>
                         
@@ -580,7 +776,7 @@
                             
                             ${status === 'ready' ? `
                                 <button class="btn btn-primary" onclick="completeOrder('${order.id}')">
-                                    Picked Up
+                                    Order Picked Up
                                 </button>
                             ` : ''}
                         </div>
@@ -591,30 +787,39 @@
 
         // ==================== ORDER ACTIONS ====================
         function updateOrderStatus(orderId, newStatus) {
-            const saved = localStorage.getItem(SERVER_KEY);
-            if (!saved) return;
-            
             try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (!saved) return;
+                
                 const serverData = JSON.parse(saved);
                 const orderIndex = serverData.orders.findIndex(order => order.id === orderId);
                 
                 if (orderIndex !== -1) {
                     const oldStatus = serverData.orders[orderIndex].status;
+                    
+                    // Update order status
                     serverData.orders[orderIndex].status = newStatus;
                     serverData.orders[orderIndex].updatedAt = new Date().toISOString();
                     serverData.lastUpdate = new Date().toISOString();
                     
-                    localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
+                    // Save back to storage
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(serverData));
                     
-                    // Update local data
-                    kitchenData.orders = serverData.orders;
+                    // Update local state
+                    kitchenState.orders = serverData.orders;
                     renderOrders();
                     
-                    showNotification(`Order ${orderId} moved to ${newStatus}`, 'update');
+                    // Show notification
+                    showNotification(`Order moved to ${newStatus}`, 'update');
                     
-                    // Play sound if enabled and status changed
-                    if (kitchenData.soundEnabled && oldStatus !== newStatus) {
+                    // Play sound if enabled
+                    if (kitchenState.soundEnabled && oldStatus !== newStatus) {
                         playNotificationSound();
+                    }
+                    
+                    // Vibrate on mobile
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate(50);
                     }
                 }
             } catch (e) {
@@ -624,28 +829,41 @@
         }
 
         function completeOrder(orderId) {
-            if (!confirm('Mark this order as completed?')) return;
-            
-            const saved = localStorage.getItem(SERVER_KEY);
-            if (!saved) return;
+            if (!confirm('Mark this order as completed and picked up?')) return;
             
             try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (!saved) return;
+                
                 const serverData = JSON.parse(saved);
+                const orderIndex = serverData.orders.findIndex(order => order.id === orderId);
                 
-                // Remove order from kitchen display
-                serverData.orders = serverData.orders.filter(order => order.id !== orderId);
-                serverData.lastUpdate = new Date().toISOString();
-                
-                localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
-                
-                // Update local data
-                kitchenData.orders = serverData.orders;
-                renderOrders();
-                
-                showNotification('Order marked as completed', 'completed');
-                
-                if (kitchenData.soundEnabled) {
-                    playNotificationSound();
+                if (orderIndex !== -1) {
+                    const tableNumber = serverData.orders[orderIndex].tableNumber;
+                    
+                    // Remove order from list
+                    serverData.orders.splice(orderIndex, 1);
+                    serverData.lastUpdate = new Date().toISOString();
+                    
+                    // Save back to storage
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(serverData));
+                    
+                    // Update local state
+                    kitchenState.orders = serverData.orders;
+                    renderOrders();
+                    
+                    // Show notification
+                    showNotification(`Order from Table ${tableNumber} completed!`, 'completed');
+                    
+                    // Play sound if enabled
+                    if (kitchenState.soundEnabled) {
+                        playNotificationSound();
+                    }
+                    
+                    // Vibrate on mobile
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate([50, 30, 50]);
+                    }
                 }
             } catch (e) {
                 console.error('Error completing order:', e);
@@ -653,7 +871,72 @@
             }
         }
 
+        // ==================== MOBILE UI FUNCTIONS ====================
+        function showColumn(column) {
+            kitchenState.activeColumn = column;
+            
+            // Update tabs
+            document.querySelectorAll('.kitchen-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show selected column
+            document.querySelectorAll('.order-column').forEach(col => {
+                col.classList.remove('active');
+            });
+            document.getElementById(`${column}-column`).classList.add('active');
+        }
+
+        function setupSwipeEvents() {
+            let startX;
+            const columns = ['pending', 'preparing', 'ready'];
+            
+            document.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!startX) return;
+                
+                const currentX = e.touches[0].clientX;
+                const diff = startX - currentX;
+                
+                // Swipe threshold
+                if (Math.abs(diff) > 50) {
+                    const currentIndex = columns.indexOf(kitchenState.activeColumn);
+                    let newIndex;
+                    
+                    if (diff > 0) {
+                        // Swipe left - next column
+                        newIndex = Math.min(currentIndex + 1, columns.length - 1);
+                    } else {
+                        // Swipe right - previous column
+                        newIndex = Math.max(currentIndex - 1, 0);
+                    }
+                    
+                    if (newIndex !== currentIndex) {
+                        showColumn(columns[newIndex]);
+                        startX = null; // Reset to prevent multiple triggers
+                    }
+                }
+            }, { passive: true });
+            
+            document.addEventListener('touchend', () => {
+                startX = null;
+            }, { passive: true });
+        }
+
         // ==================== UTILITY FUNCTIONS ====================
+        function getEmptyStateMessage(status) {
+            switch(status) {
+                case 'pending': return 'Waiting for new orders...';
+                case 'preparing': return 'Start preparing pending orders';
+                case 'ready': return 'Complete preparing orders';
+                default: return 'No orders';
+            }
+        }
+
         function formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
@@ -696,12 +979,12 @@
         }
 
         function toggleSound() {
-            kitchenData.soundEnabled = !kitchenData.soundEnabled;
+            kitchenState.soundEnabled = !kitchenState.soundEnabled;
             const toggle = document.getElementById('sound-toggle');
             const icon = toggle.querySelector('span:first-child');
             const text = toggle.querySelector('span:last-child');
             
-            if (kitchenData.soundEnabled) {
+            if (kitchenState.soundEnabled) {
                 icon.textContent = '🔊';
                 text.textContent = 'Sound On';
             } else {
@@ -713,27 +996,39 @@
         function refreshOrders() {
             loadData();
             showNotification('Orders refreshed', 'update');
+            
+            // Vibrate on mobile
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
         }
 
         function updateSyncStatus() {
             const statusEl = document.getElementById('sync-status');
-            if (kitchenData.lastUpdate) {
-                const now = new Date();
-                const lastUpdate = new Date(kitchenData.lastUpdate);
-                const diff = Math.floor((now - lastUpdate) / 1000);
-                
-                if (diff > 10) {
-                    statusEl.className = 'sync-status offline';
-                    statusEl.textContent = '🔴 Offline';
-                } else {
-                    statusEl.className = 'sync-status online';
-                    statusEl.textContent = '🟢 Synced';
-                }
+            
+            if (navigator.onLine) {
+                statusEl.className = 'sync-status online';
+                statusEl.textContent = kitchenState.lastUpdate ? '🟢 Synced' : '🟢 Online';
+            } else {
+                statusEl.className = 'sync-status offline';
+                statusEl.textContent = '🔴 Offline';
             }
         }
 
-        // ==================== INITIALIZE ====================
-        window.addEventListener('load', initKitchen);
+        // ==================== AUTO REFRESH ON VISIBILITY ====================
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // Tab became visible, refresh data
+                loadData();
+            }
+        });
+
+        // Refresh data every minute as backup
+        setInterval(() => {
+            if (!document.hidden) {
+                loadData();
+            }
+        }, 60000);
     </script>
 </body>
 </html>
