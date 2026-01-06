@@ -369,6 +369,28 @@
                 z-index: 100;
             }
         }
+        /* Add Kitchen Link to Header */
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .kitchen-link {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .kitchen-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -376,6 +398,8 @@
     <div class="header">
         <h1>🍽️ Restaurant POS</h1>
         <div id="restaurant-status">Ready</div>
+        <a href="kitchen.html" class="kitchen-link">👨‍🍳 Kitchen View</a>
+
     </div>
 
     <!-- Main Container -->
