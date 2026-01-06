@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Restaurant POS</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Restaurant POS</title>
     <style>
         * {
             margin: 0;
@@ -13,14 +12,14 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -31,6 +30,35 @@
 
         .header h1 {
             font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         /* Main Container */
@@ -41,121 +69,144 @@
 
         /* Tables Sidebar */
         .tables-sidebar {
-            width: 200px;
+            width: 250px;
             background: white;
-            border-right: 1px solid #e5e7eb;
-            padding: 15px;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px;
             overflow-y: auto;
         }
 
         .tables-sidebar h3 {
-            margin-bottom: 15px;
-            color: #4f46e5;
+            color: #3b82f6;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
         }
 
-        .table-btn {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .table-card {
             background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
             cursor: pointer;
-            text-align: center;
-            font-weight: 600;
             transition: all 0.3s;
+            text-align: center;
         }
 
-        .table-btn:hover {
-            border-color: #4f46e5;
+        .table-card:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .table-btn.active {
-            background: #4f46e5;
-            color: white;
-            border-color: #4f46e5;
+        .table-card.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
-        .table-btn.vacant {
+        .table-card.vacant {
             border-color: #10b981;
+            background: #f0fdf4;
         }
 
-        .table-btn.occupied {
+        .table-card.occupied {
             border-color: #ef4444;
+            background: #fef2f2;
         }
 
-        /* Main Content */
-        .main-content {
+        .table-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .table-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .table-amount {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        /* Menu Area */
+        .menu-area {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
         }
 
-        /* Menu Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
         }
 
         .menu-item {
             background: white;
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
             padding: 15px;
-            border: 2px solid #e5e7eb;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .menu-item:hover {
-            border-color: #4f46e5;
+            border-color: #3b82f6;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .menu-item h4 {
-            color: #1f2937;
+            color: #1e293b;
             margin-bottom: 5px;
         }
 
-        .menu-item .category {
-            color: #6b7280;
+        .menu-item-category {
+            color: #64748b;
             font-size: 0.85rem;
             margin-bottom: 10px;
         }
 
-        .menu-item .price {
-            color: #059669;
+        .menu-item-price {
+            color: #10b981;
             font-weight: bold;
             font-size: 1.1rem;
         }
 
-        .menu-item .controls {
+        .menu-item-controls {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-top: 10px;
         }
 
-        .quantity-btn {
+        .qty-btn {
             width: 30px;
             height: 30px;
-            border: 2px solid #4f46e5;
+            border: 2px solid #3b82f6;
             background: white;
-            border-radius: 5px;
-            color: #4f46e5;
+            border-radius: 6px;
+            color: #3b82f6;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .quantity-btn:hover {
-            background: #4f46e5;
+        .qty-btn:hover {
+            background: #3b82f6;
             color: white;
         }
 
-        .quantity-display {
+        .qty-display {
             min-width: 30px;
             text-align: center;
             font-weight: bold;
@@ -163,24 +214,27 @@
 
         /* Order Panel */
         .order-panel {
-            width: 300px;
+            width: 350px;
             background: white;
-            border-left: 1px solid #e5e7eb;
-            padding: 20px;
+            border-left: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
         }
 
-        .order-panel h3 {
-            color: #4f46e5;
-            margin-bottom: 15px;
-            text-align: center;
+        .order-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
         }
 
-        .order-items {
+        .order-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .order-body {
             flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            margin-bottom: 20px;
         }
 
         .order-item {
@@ -188,7 +242,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .order-item-name {
@@ -201,16 +255,21 @@
         }
 
         .order-item-price {
-            color: #059669;
+            color: #10b981;
             font-weight: bold;
         }
 
+        .order-footer {
+            padding: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
         .order-total {
-            padding: 15px 0;
-            border-top: 2px solid #e5e7eb;
             text-align: right;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
+            margin-bottom: 15px;
+            color: #1e293b;
         }
 
         .action-buttons {
@@ -219,50 +278,71 @@
             gap: 10px;
         }
 
-        .btn {
+        .action-buttons .btn {
+            width: 100%;
             padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            font-size: 1rem;
         }
 
         .btn-primary {
-            background: #4f46e5;
-            color: white;
+            background: #3b82f6;
         }
 
         .btn-primary:hover {
-            background: #3730a3;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #4b5563;
-        }
-
-        .btn-secondary:hover {
-            background: #d1d5db;
+            background: #2563eb;
         }
 
         .btn-success {
             background: #10b981;
-            color: white;
         }
 
         .btn-success:hover {
             background: #059669;
         }
 
+        .btn-secondary {
+            background: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
         .btn-danger {
             background: #ef4444;
-            color: white;
         }
 
         .btn-danger:hover {
             background: #dc2626;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sync-status.online {
+            color: #10b981;
+        }
+
+        .sync-status.offline {
+            color: #ef4444;
         }
 
         /* Notifications */
@@ -296,7 +376,7 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Modals */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -314,82 +394,73 @@
             background: white;
             border-radius: 12px;
             padding: 30px;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .modal h2 {
+            color: #3b82f6;
             margin-bottom: 20px;
-            color: #4f46e5;
         }
 
-        .modal-buttons {
-            display: flex;
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-top: 20px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #3b82f6;
+        }
+
+        .payment-method.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .container {
                 flex-direction: column;
             }
             
             .tables-sidebar {
                 width: 100%;
-                height: 120px;
+                height: 150px;
                 overflow-x: auto;
-                overflow-y: hidden;
+            }
+            
+            .tables-grid {
                 display: flex;
                 flex-wrap: nowrap;
-                padding: 10px;
             }
             
-            .tables-sidebar h3 {
-                display: none;
-            }
-            
-            .table-btn {
-                min-width: 80px;
-                margin-right: 10px;
-                margin-bottom: 0;
+            .table-card {
+                min-width: 100px;
             }
             
             .order-panel {
                 width: 100%;
                 height: 300px;
                 position: fixed;
-                bottom: 0;
+                bottom: 40px;
                 left: 0;
                 right: 0;
-                border-top: 2px solid #e5e7eb;
+                border-top: 2px solid #e2e8f0;
                 border-left: none;
-                z-index: 100;
             }
-        }
-        /* Add Kitchen Link to Header */
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .kitchen-link {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .kitchen-link:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -397,9 +468,10 @@
     <!-- Header -->
     <div class="header">
         <h1>🍽️ Restaurant POS</h1>
-        <div id="restaurant-status">Ready</div>
-        <a href="kitchen.html" class="kitchen-link">👨‍🍳 Kitchen View</a>
-
+        <div class="header-buttons">
+            <a href="kitchen.html" class="btn btn-outline">👨‍🍳 Kitchen</a>
+            <a href="server.html" class="btn btn-outline">🖥️ Server View</a>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -407,38 +479,72 @@
         <!-- Tables Sidebar -->
         <div class="tables-sidebar">
             <h3>Tables</h3>
-            <div id="tables-list"></div>
+            <div class="tables-grid" id="tables-list"></div>
         </div>
 
-        <!-- Main Content - Menu -->
-        <div class="main-content">
+        <!-- Menu Area -->
+        <div class="menu-area">
             <h3>Menu Items</h3>
-            <div id="menu-grid" class="menu-grid"></div>
+            <div class="menu-grid" id="menu-grid"></div>
         </div>
 
         <!-- Order Panel -->
         <div class="order-panel">
-            <h3 id="current-table-title">Select a Table</h3>
-            <div class="order-items" id="order-items"></div>
-            <div class="order-total">
-                Total: <span id="order-total">$0.00</span>
+            <div class="order-header">
+                <h3 id="current-table-title">Select a Table</h3>
             </div>
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="submitOrder()">Submit Order</button>
-                <button class="btn btn-success" onclick="checkoutOrder()" style="display: none;" id="checkout-btn">Checkout</button>
-                <button class="btn btn-secondary" onclick="clearOrder()">Clear Order</button>
+            <div class="order-body" id="order-items"></div>
+            <div class="order-footer">
+                <div class="order-total">
+                    Total: <span id="order-total">$0.00</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitOrder()">Submit Order</button>
+                    <button class="btn btn-success" onclick="showCheckoutModal()" id="checkout-btn" style="display: none;">Checkout</button>
+                    <button class="btn btn-secondary" onclick="clearOrder()">Clear Order</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Receipt Modal -->
-    <div class="modal-overlay" id="receipt-modal">
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div id="sync-status" class="sync-status online">🟢 Synced</div>
+        <div id="last-update">Last update: Just now</div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
         <div class="modal">
-            <h2>Receipt</h2>
-            <div id="receipt-content"></div>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="printReceipt()">Print</button>
-                <button class="btn btn-secondary" onclick="closeReceipt()">Close</button>
+            <h2>Checkout - Table <span id="checkout-table-number"></span></h2>
+            <div id="checkout-items-list"></div>
+            <div class="order-total" style="margin: 20px 0;">
+                Total: <span id="checkout-total">$0.00</span>
+            </div>
+            
+            <h4>Payment Method</h4>
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPayment('cash')">
+                    <div style="font-size: 1.5rem;">💵</div>
+                    <div>Cash</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment('card')">
+                    <div style="font-size: 1.5rem;">💳</div>
+                    <div>Card</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment('upi')">
+                    <div style="font-size: 1.5rem;">📱</div>
+                    <div>UPI</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment('split')">
+                    <div style="font-size: 1.5rem;">↔️</div>
+                    <div>Split</div>
+                </div>
+            </div>
+            
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-success" onclick="processCheckout()">Complete Payment</button>
+                <button class="btn btn-secondary" onclick="hideModal('checkout-modal')">Cancel</button>
             </div>
         </div>
     </div>
@@ -447,73 +553,218 @@
     <div id="notification-container"></div>
 
     <script>
-        // ==================== SIMPLE STATE MANAGEMENT ====================
-        const appState = {
+        // ==================== LOCAL STORAGE SERVER SIMULATION ====================
+        const SERVER_KEY = 'restaurant_pos_server_data';
+        const UPDATE_INTERVAL = 2000; // 2 seconds
+
+        // Server data structure
+        let serverData = {
             tables: [],
-            menuItems: [],
-            currentTable: null,
-            currentOrder: [],
-            orders: []
+            menu: [],
+            orders: [],
+            transactions: [],
+            lastUpdate: null,
+            deviceId: generateDeviceId()
         };
 
-        // ==================== INITIALIZE APP ====================
-        function initApp() {
-            loadDemoData();
+        // Current device state
+        let currentState = {
+            tables: [],
+            menu: [],
+            currentTable: null,
+            currentOrder: [],
+            selectedPayment: null
+        };
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            loadInitialData();
+            setupEventListeners();
+            startSyncLoop();
             renderTables();
             renderMenu();
             updateOrderPanel();
+            updateStatusBar();
         }
 
-        // ==================== DEMO DATA ====================
-        function loadDemoData() {
+        function generateDeviceId() {
+            let id = localStorage.getItem('device_id');
+            if (!id) {
+                id = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('device_id', id);
+            }
+            return id;
+        }
+
+        function loadInitialData() {
+            // Try to load from server
+            const saved = localStorage.getItem(SERVER_KEY);
+            if (saved) {
+                try {
+                    serverData = JSON.parse(saved);
+                    
+                    // Check if we need to initialize demo data
+                    if (serverData.tables.length === 0) {
+                        initDemoData();
+                        saveToServer();
+                    }
+                    
+                    syncFromServer();
+                    
+                } catch (e) {
+                    console.error('Error loading server data:', e);
+                    initDemoData();
+                    saveToServer();
+                }
+            } else {
+                initDemoData();
+                saveToServer();
+            }
+        }
+
+        function initDemoData() {
             // Create tables
-            appState.tables = [];
-            for (let i = 1; i <= 10; i++) {
-                appState.tables.push({
-                    id: i,
+            serverData.tables = [];
+            for (let i = 1; i <= 12; i++) {
+                serverData.tables.push({
+                    id: `table_${i}`,
                     number: i,
-                    status: Math.random() > 0.5 ? 'vacant' : 'occupied',
-                    order: []
+                    name: `Table ${i}`,
+                    capacity: i <= 4 ? 2 : i <= 8 ? 4 : 6,
+                    status: 'vacant',
+                    currentOrder: [],
+                    lastUpdate: new Date().toISOString()
                 });
             }
 
-            // Create menu items
-            appState.menuItems = [
-                { id: 1, name: "Burger", category: "Main", price: 8.99 },
-                { id: 2, name: "Pizza", category: "Main", price: 12.99 },
-                { id: 3, name: "Fries", category: "Side", price: 3.99 },
-                { id: 4, name: "Salad", category: "Side", price: 6.99 },
-                { id: 5, name: "Coke", category: "Drink", price: 1.99 },
-                { id: 6, name: "Water", category: "Drink", price: 0.99 },
-                { id: 7, name: "Ice Cream", category: "Dessert", price: 4.99 },
-                { id: 8, name: "Coffee", category: "Drink", price: 2.49 }
+            // Create menu
+            serverData.menu = [
+                { id: 'item_1', name: 'Veg Burger', category: 'Main', price: 8.99, stock: 50 },
+                { id: 'item_2', name: 'Chicken Burger', category: 'Main', price: 10.99, stock: 50 },
+                { id: 'item_3', name: 'French Fries', category: 'Sides', price: 4.99, stock: 50 },
+                { id: 'item_4', name: 'Onion Rings', category: 'Sides', price: 5.99, stock: 50 },
+                { id: 'item_5', name: 'Coca Cola', category: 'Drinks', price: 2.99, stock: 50 },
+                { id: 'item_6', name: 'Sprite', category: 'Drinks', price: 2.99, stock: 50 },
+                { id: 'item_7', name: 'Water', category: 'Drinks', price: 1.99, stock: 50 },
+                { id: 'item_8', name: 'Ice Cream', category: 'Dessert', price: 4.99, stock: 50 },
+                { id: 'item_9', name: 'Cheese Pizza', category: 'Main', price: 12.99, stock: 50 },
+                { id: 'item_10', name: 'Garlic Bread', category: 'Sides', price: 6.99, stock: 50 }
             ];
+
+            serverData.orders = [];
+            serverData.transactions = [];
+            serverData.lastUpdate = new Date().toISOString();
         }
 
-        // ==================== RENDER FUNCTIONS ====================
+        // ==================== SERVER SYNC ====================
+        function saveToServer() {
+            serverData.lastUpdate = new Date().toISOString();
+            localStorage.setItem(SERVER_KEY, JSON.stringify(serverData));
+            
+            // Trigger storage event for other tabs
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: SERVER_KEY,
+                newValue: JSON.stringify(serverData)
+            }));
+            
+            updateStatusBar();
+        }
+
+        function syncFromServer() {
+            const saved = localStorage.getItem(SERVER_KEY);
+            if (saved) {
+                try {
+                    const newData = JSON.parse(saved);
+                    
+                    // Only update if server data is newer
+                    if (!serverData.lastUpdate || new Date(newData.lastUpdate) > new Date(serverData.lastUpdate)) {
+                        serverData = newData;
+                        
+                        // Update local state
+                        currentState.tables = [...serverData.tables];
+                        currentState.menu = [...serverData.menu];
+                        
+                        // Update UI
+                        renderTables();
+                        renderMenu();
+                        
+                        // If we have a current table, update its data
+                        if (currentState.currentTable) {
+                            const table = currentState.tables.find(t => t.id === currentState.currentTable);
+                            if (table) {
+                                currentState.currentOrder = table.currentOrder || [];
+                                updateOrderPanel();
+                            }
+                        }
+                        
+                        showNotification('Data synced from server', 'info');
+                    }
+                    
+                } catch (e) {
+                    console.error('Error syncing from server:', e);
+                }
+            }
+        }
+
+        function startSyncLoop() {
+            setInterval(() => {
+                syncFromServer();
+            }, UPDATE_INTERVAL);
+        }
+
+        function setupEventListeners() {
+            // Listen for changes from other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === SERVER_KEY) {
+                    syncFromServer();
+                    showNotification('Data updated from another device', 'info');
+                }
+            });
+            
+            // Listen for online/offline status
+            window.addEventListener('online', () => {
+                document.getElementById('sync-status').className = 'sync-status online';
+                document.getElementById('sync-status').textContent = '🟢 Synced';
+            });
+            
+            window.addEventListener('offline', () => {
+                document.getElementById('sync-status').className = 'sync-status offline';
+                document.getElementById('sync-status').textContent = '🔴 Offline';
+            });
+        }
+
+        // ==================== UI FUNCTIONS ====================
         function renderTables() {
             const container = document.getElementById('tables-list');
-            container.innerHTML = appState.tables.map(table => `
-                <button class="table-btn ${table.status}" onclick="selectTable(${table.id})">
-                    Table ${table.number}<br>
-                    <small>${table.status}</small>
-                </button>
-            `).join('');
+            container.innerHTML = currentState.tables.map(table => {
+                const orderTotal = (table.currentOrder || []).reduce((sum, item) => 
+                    sum + (item.price * item.quantity), 0);
+                
+                return `
+                    <div class="table-card ${table.status} ${currentState.currentTable === table.id ? 'active' : ''}" 
+                         onclick="selectTable('${table.id}')">
+                        <div class="table-number">${table.number}</div>
+                        <div class="table-status">${table.status}</div>
+                        ${orderTotal > 0 ? 
+                            `<div class="table-amount">$${orderTotal.toFixed(2)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderMenu() {
             const container = document.getElementById('menu-grid');
-            container.innerHTML = appState.menuItems.map(item => {
+            container.innerHTML = currentState.menu.map(item => {
                 const currentQty = getOrderQuantity(item.id);
                 return `
                     <div class="menu-item">
                         <h4>${item.name}</h4>
-                        <div class="category">${item.category}</div>
-                        <div class="price">$${item.price.toFixed(2)}</div>
-                        <div class="controls">
-                            <button class="quantity-btn" onclick="adjustQuantity(${item.id}, -1)">-</button>
-                            <div class="quantity-display">${currentQty}</div>
-                            <button class="quantity-btn" onclick="adjustQuantity(${item.id}, 1)">+</button>
+                        <div class="menu-item-category">${item.category}</div>
+                        <div class="menu-item-price">$${item.price.toFixed(2)}</div>
+                        <div class="menu-item-controls">
+                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', -1)">-</button>
+                            <div class="qty-display">${currentQty}</div>
+                            <button class="qty-btn" onclick="adjustQuantity('${item.id}', 1)">+</button>
                         </div>
                     </div>
                 `;
@@ -526,27 +777,24 @@
             const tableTitle = document.getElementById('current-table-title');
             const checkoutBtn = document.getElementById('checkout-btn');
 
-            if (appState.currentTable) {
-                const table = getTableById(appState.currentTable);
-                tableTitle.textContent = `Table ${table.number}`;
-                
-                if (table.status === 'occupied') {
-                    checkoutBtn.style.display = 'block';
-                } else {
-                    checkoutBtn.style.display = 'none';
+            if (currentState.currentTable) {
+                const table = currentState.tables.find(t => t.id === currentState.currentTable);
+                if (table) {
+                    tableTitle.textContent = `Table ${table.number}`;
+                    checkoutBtn.style.display = table.status === 'occupied' ? 'block' : 'none';
                 }
             } else {
                 tableTitle.textContent = 'Select a Table';
                 checkoutBtn.style.display = 'none';
             }
 
-            if (appState.currentOrder.length === 0) {
-                itemsContainer.innerHTML = '<p style="color: #6b7280; text-align: center;">No items added</p>';
+            if (currentState.currentOrder.length === 0) {
+                itemsContainer.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No items added</div>';
                 totalElement.textContent = '$0.00';
                 return;
             }
 
-            itemsContainer.innerHTML = appState.currentOrder.map(item => `
+            itemsContainer.innerHTML = currentState.currentOrder.map(item => `
                 <div class="order-item">
                     <div class="order-item-name">${item.name}</div>
                     <div class="order-item-qty">x${item.quantity}</div>
@@ -554,58 +802,64 @@
                 </div>
             `).join('');
 
-            const total = appState.currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = currentState.currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             totalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateStatusBar() {
+            const lastUpdateEl = document.getElementById('last-update');
+            if (serverData.lastUpdate) {
+                const date = new Date(serverData.lastUpdate);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+                
+                if (diff < 60) {
+                    lastUpdateEl.textContent = 'Last update: Just now';
+                } else if (diff < 3600) {
+                    const mins = Math.floor(diff / 60);
+                    lastUpdateEl.textContent = `Last update: ${mins} min${mins > 1 ? 's' : ''} ago`;
+                } else {
+                    lastUpdateEl.textContent = `Last update: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                }
+            }
         }
 
         // ==================== ORDER MANAGEMENT ====================
         function selectTable(tableId) {
-            appState.currentTable = tableId;
-            const table = getTableById(tableId);
+            currentState.currentTable = tableId;
+            const table = currentState.tables.find(t => t.id === tableId);
             
-            // Update button styles
-            document.querySelectorAll('.table-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Load existing order if table is occupied
-            if (table.status === 'occupied') {
-                const existingOrder = appState.orders.find(order => order.tableId === tableId);
-                appState.currentOrder = existingOrder ? existingOrder.items : [];
-            } else {
-                appState.currentOrder = [];
+            if (table) {
+                currentState.currentOrder = table.currentOrder || [];
+                updateOrderPanel();
+                renderTables();
+                renderMenu();
             }
-            
-            updateOrderPanel();
-            renderMenu(); // Update quantities in menu
-        }
-
-        function getTableById(id) {
-            return appState.tables.find(table => table.id === id);
         }
 
         function getOrderQuantity(itemId) {
-            const item = appState.currentOrder.find(item => item.id === itemId);
+            const item = currentState.currentOrder.find(item => item.id === itemId);
             return item ? item.quantity : 0;
         }
 
         function adjustQuantity(itemId, change) {
-            if (!appState.currentTable) {
+            if (!currentState.currentTable) {
                 showNotification('Please select a table first', 'error');
                 return;
             }
 
-            const menuItem = appState.menuItems.find(item => item.id === itemId);
+            const menuItem = currentState.menu.find(item => item.id === itemId);
             if (!menuItem) return;
 
-            let orderItem = appState.currentOrder.find(item => item.id === itemId);
+            let orderItem = currentState.currentOrder.find(item => item.id === itemId);
 
             if (orderItem) {
                 orderItem.quantity += change;
                 if (orderItem.quantity <= 0) {
-                    appState.currentOrder = appState.currentOrder.filter(item => item.id !== itemId);
+                    currentState.currentOrder = currentState.currentOrder.filter(item => item.id !== itemId);
                 }
             } else if (change > 0) {
-                appState.currentOrder.push({
+                currentState.currentOrder.push({
                     id: itemId,
                     name: menuItem.name,
                     price: menuItem.price,
@@ -618,158 +872,143 @@
         }
 
         function submitOrder() {
-            if (!appState.currentTable) {
+            if (!currentState.currentTable) {
                 showNotification('Please select a table', 'error');
                 return;
             }
 
-            if (appState.currentOrder.length === 0) {
+            if (currentState.currentOrder.length === 0) {
                 showNotification('Please add items to order', 'error');
                 return;
             }
 
-            const table = getTableById(appState.currentTable);
-            
-            // Update table status
-            table.status = 'occupied';
-            
-            // Save order
-            const existingOrderIndex = appState.orders.findIndex(order => order.tableId === appState.currentTable);
-            const orderData = {
-                tableId: appState.currentTable,
-                tableNumber: table.number,
-                items: [...appState.currentOrder],
-                status: 'pending',
-                timestamp: new Date()
-            };
-
-            if (existingOrderIndex >= 0) {
-                appState.orders[existingOrderIndex] = orderData;
-            } else {
-                appState.orders.push(orderData);
+            // Update table in server data
+            const tableIndex = serverData.tables.findIndex(t => t.id === currentState.currentTable);
+            if (tableIndex !== -1) {
+                serverData.tables[tableIndex].status = 'occupied';
+                serverData.tables[tableIndex].currentOrder = [...currentState.currentOrder];
+                serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
+                
+                // Create kitchen order
+                const orderId = `order_${Date.now()}`;
+                serverData.orders.push({
+                    id: orderId,
+                    tableId: currentState.currentTable,
+                    tableNumber: serverData.tables[tableIndex].number,
+                    items: [...currentState.currentOrder],
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    createdBy: serverData.deviceId
+                });
+                
+                saveToServer();
+                
+                // Clear current order
+                currentState.currentOrder = [];
+                updateOrderPanel();
+                renderMenu();
+                renderTables();
+                
+                showNotification('Order submitted to kitchen!', 'success');
             }
-
-            renderTables();
-            updateOrderPanel();
-            showNotification('Order submitted successfully!', 'success');
         }
 
-        function checkoutOrder() {
-            if (!appState.currentTable) return;
-
-            const table = getTableById(appState.currentTable);
-            const order = appState.orders.find(order => order.tableId === appState.currentTable);
+        function showCheckoutModal() {
+            if (!currentState.currentTable) return;
             
-            if (!order) {
-                showNotification('No order found for this table', 'error');
+            const table = currentState.tables.find(t => t.id === currentState.currentTable);
+            if (!table || table.status !== 'occupied') return;
+            
+            const items = table.currentOrder || [];
+            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            document.getElementById('checkout-table-number').textContent = table.number;
+            document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+            
+            const itemsList = document.getElementById('checkout-items-list');
+            itemsList.innerHTML = items.map(item => `
+                <div class="order-item">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-qty">x${item.quantity}</div>
+                    <div class="order-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+            
+            showModal('checkout-modal');
+        }
+
+        function selectPayment(method) {
+            currentState.selectedPayment = method;
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
+            event.target.closest('.payment-method').classList.add('active');
+        }
+
+        function processCheckout() {
+            if (!currentState.selectedPayment) {
+                showNotification('Please select payment method', 'error');
                 return;
             }
 
-            // Calculate total
-            const total = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tableIndex = serverData.tables.findIndex(t => t.id === currentState.currentTable);
+            if (tableIndex === -1) return;
             
-            // Generate receipt
-            generateReceipt(table, order, total);
+            const table = serverData.tables[tableIndex];
+            const items = table.currentOrder || [];
+            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
-            // Clear the order
-            table.status = 'vacant';
-            appState.currentOrder = [];
+            // Create transaction
+            serverData.transactions.push({
+                id: `txn_${Date.now()}`,
+                tableId: currentState.currentTable,
+                tableNumber: table.number,
+                items: items,
+                total: total,
+                paymentMethod: currentState.selectedPayment,
+                status: 'completed',
+                timestamp: new Date().toISOString(),
+                processedBy: serverData.deviceId
+            });
             
-            // Remove from orders list
-            appState.orders = appState.orders.filter(o => o.tableId !== appState.currentTable);
+            // Update table
+            serverData.tables[tableIndex].status = 'vacant';
+            serverData.tables[tableIndex].currentOrder = [];
+            serverData.tables[tableIndex].lastUpdate = new Date().toISOString();
             
-            // Reset selection
-            appState.currentTable = null;
+            // Remove kitchen orders for this table
+            serverData.orders = serverData.orders.filter(order => 
+                order.tableId !== currentState.currentTable || order.status === 'completed'
+            );
             
-            renderTables();
+            saveToServer();
+            
+            // Reset UI
+            currentState.currentOrder = [];
+            currentState.selectedPayment = null;
+            hideModal('checkout-modal');
             updateOrderPanel();
-            renderMenu();
+            renderTables();
             
-            showNotification('Checkout completed!', 'success');
+            showNotification(`Payment of $${total.toFixed(2)} completed!`, 'success');
         }
 
         function clearOrder() {
             if (!confirm('Clear current order?')) return;
             
-            appState.currentOrder = [];
+            currentState.currentOrder = [];
             updateOrderPanel();
             renderMenu();
             showNotification('Order cleared', 'info');
         }
 
-        // ==================== RECEIPT FUNCTIONS ====================
-        function generateReceipt(table, order, total) {
-            const content = document.getElementById('receipt-content');
-            const now = new Date();
-            
-            content.innerHTML = `
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h3>Restaurant POS</h3>
-                    <div>${now.toLocaleDateString()} ${now.toLocaleTimeString()}</div>
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <div><strong>Table:</strong> ${table.number}</div>
-                    <div><strong>Order ID:</strong> ${Date.now().toString().slice(-6)}</div>
-                </div>
-                
-                <hr style="border: none; border-top: 1px dashed #e5e7eb; margin: 15px 0;">
-                
-                ${order.items.map(item => `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <div>${item.name} x${item.quantity}</div>
-                        <div>$${(item.price * item.quantity).toFixed(2)}</div>
-                    </div>
-                `).join('')}
-                
-                <hr style="border: none; border-top: 1px dashed #e5e7eb; margin: 15px 0;">
-                
-                <div style="text-align: right; font-size: 1.2rem; font-weight: bold;">
-                    Total: $${total.toFixed(2)}
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.9rem;">
-                    Thank you for visiting!
-                </div>
-            `;
-            
-            document.getElementById('receipt-modal').style.display = 'flex';
+        // ==================== MODAL FUNCTIONS ====================
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
         }
 
-        function printReceipt() {
-            const printWindow = window.open('', '_blank');
-            const content = document.getElementById('receipt-content').innerHTML;
-            
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Receipt</title>
-                    <style>
-                        body { font-family: monospace; padding: 20px; max-width: 300px; }
-                        .header { text-align: center; margin-bottom: 20px; }
-                        .total { text-align: right; font-weight: bold; }
-                        hr { border: none; border-top: 1px dashed #000; margin: 15px 0; }
-                    </style>
-                </head>
-                <body>
-                    ${content}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            setTimeout(function() { window.close(); }, 1000);
-                        }
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         }
 
-        function closeReceipt() {
-            document.getElementById('receipt-modal').style.display = 'none';
-        }
-
-        // ==================== UTILITY FUNCTIONS ====================
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notification-container');
             const notification = document.createElement('div');
@@ -784,103 +1023,9 @@
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
-        // ==================== SYNC WITH KITCHEN ====================
-function saveOrderToKitchen(orderData) {
-    // Get existing kitchen orders
-    let kitchenOrders = [];
-    try {
-        const saved = localStorage.getItem('kitchenOrders');
-        if (saved) {
-            kitchenOrders = JSON.parse(saved);
-        }
-    } catch (e) {
-        console.error('Error loading kitchen orders:', e);
-    }
-    
-    // Add new order
-    kitchenOrders.push({
-        id: 'ORD-' + Date.now(),
-        tableNumber: orderData.tableNumber,
-        items: orderData.items,
-        status: 'pending',
-        timestamp: new Date()
-    });
-    
-    // Save back to localStorage
-    localStorage.setItem('kitchenOrders', JSON.stringify(kitchenOrders));
-    
-    // Trigger storage event for kitchen page
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'kitchenOrders',
-        newValue: JSON.stringify(kitchenOrders),
-        oldValue: localStorage.getItem('kitchenOrders')
-    }));
-}
 
-// Update the submitOrder function in index.html
-function submitOrder() {
-    if (!appState.currentTable) {
-        showNotification('Please select a table', 'error');
-        return;
-    }
-
-    if (appState.currentOrder.length === 0) {
-        showNotification('Please add items to order', 'error');
-        return;
-    }
-
-    const table = getTableById(appState.currentTable);
-    
-    // Update table status
-    table.status = 'occupied';
-    
-    // Save order to kitchen
-    const orderData = {
-        tableId: appState.currentTable,
-        tableNumber: table.number,
-        items: [...appState.currentOrder],
-        status: 'pending',
-        timestamp: new Date()
-    };
-    
-    saveOrderToKitchen(orderData);
-    
-    // Update local state
-    const existingOrderIndex = appState.orders.findIndex(order => order.tableId === appState.currentTable);
-    if (existingOrderIndex >= 0) {
-        appState.orders[existingOrderIndex] = orderData;
-    } else {
-        appState.orders.push(orderData);
-    }
-
-    renderTables();
-    updateOrderPanel();
-    showNotification('Order sent to kitchen!', 'success');
-    
-    // Clear current order
-    appState.currentOrder = [];
-    updateOrderPanel();
-    renderMenu();
-}
-        // ==================== INITIALIZE ON LOAD ====================
-        window.addEventListener('load', initApp);
-
-        // ==================== PWA INSTALL PROMPT ====================
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Show install button after 5 seconds
-            setTimeout(() => {
-                if (deferredPrompt && confirm('Install this app for better experience?')) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then(() => {
-                        deferredPrompt = null;
-                    });
-                }
-            }, 5000);
-        });
+        // ==================== INITIALIZE ====================
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
